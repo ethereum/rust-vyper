@@ -37,7 +37,11 @@ contract_def:
 
 contract_stmt: contract_field | event_def | func_def
 
-contract_field: [contract_field_qual] NAME ':' type_desc NEWLINE
+contract_field_const: 'const' NAME ':' type_desc ['=' expr] NEWLINE
+
+contract_field_pub: ['pub'] NAME ':' type_desc NEWLINE
+
+contract_field: contract_field_const | contract_field_pub
 
 event_def:
     'event' NAME ':' NEWLINE

@@ -436,11 +436,44 @@ pub fn contract_stmt(input: Cursor) -> ParseResult<Spanned<ContractStmt>> {
     alt((contract_field, event_def, func_def))(input)
 }
 
-/// Parse a contract field definition.
-pub fn contract_field(input: Cursor) -> ParseResult<Spanned<ContractStmt>> {
+/// Parse a contract field const.
+pub fn contract_field_const(input: Cursor) -> ParseResult<Spanned<ContractStmt>> {
+
+    let (input, (qual, name_tok)) = 
+        map(pair(contract_field_const_qual, name_token), |res| {
+            let (qual, tok) = res;
+            (Some(qual), tok)
+        })(input)?;
+
+    let (input, _) = op(":")(input)?;
+    let (input, typ) = type_desc(input)?;
+    // Parse the optional assignment over here
+    let (input, _ ) = op("=")(input)?;
+    let (input, value) = opt(preceded(op("="), expr))(input)?;
+
+    let span = match &qual {
+        Some(spanned) => Span::from_pair(spanned, &typ),
+        None => Span::from_pair(name_tok, &typ),
+    };
+
+    Ok((
+        input,
+        Spanned {
+            node: ContractStmt::ContractField {
+                qual,
+                name: name_tok.into(),
+                typ,
+            },
+            span,
+        },
+    ))
+}
+
+/// Parse a contract field pub.
+pub fn contract_field_pub(input: Cursor) -> ParseResult<Spanned<ContractStmt>> {
     let (input, (qual, name_tok)) = alt((
         // Look for a qualifier and field name first...
-        map(pair(contract_field_qual, name_token), |res| {
+        map(pair(contract_field_pub_qual, name_token), |res| {
             let (qual, tok) = res;
             (Some(qual), tok)
         }),
@@ -468,6 +501,11 @@ pub fn contract_field(input: Cursor) -> ParseResult<Spanned<ContractStmt>> {
             span,
         },
     ))
+}
+
+/// Parse a contract field definition.
+pub fn contract_field(input: Cursor) -> ParseResult<Spanned<ContractStmt>> {
+    alt((contract_field_const, contract_field_pub))(input)
 }
 
 /// Parse an event definition statement.
@@ -757,6 +795,14 @@ where
 /// Parse a contract field qualifier keyword e.g. "const".
 pub fn contract_field_qual(input: Cursor) -> ParseResult<Spanned<ContractFieldQual>> {
     try_from_tok(alt((name("const"), name("pub"))))(input)
+}
+
+pub fn contract_field_pub_qual(input: Cursor) -> ParseResult<Spanned<ContractFieldQual>> {
+    try_from_tok(name("pub"))(input)
+}
+
+pub fn contract_field_const_qual(input: Cursor) -> ParseResult<Spanned<ContractFieldQual>> {
+    try_from_tok(name("const"))(input)
 }
 
 /// Parse an event field qualifier keyword i.e. "idx".
