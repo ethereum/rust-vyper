@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Fe playground</title>
+  </head>
+  <body>
+    <noscript>This page contains webassembly and javascript content, please enable javascript in your browser.</noscript>
+    <div style="display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+                position: absolute;
+                left: 0;
+                right: 0;
+                top: 0;
+                height: 50px;">
+        <div style="padding-left: 10px;
+                    padding-right: 20px;
+                    padding-top: 5px;
+                    font-size: 20px;
+                    font-family: sans-serif;">Fe Playground
+        </div>
+        <input type="button" value="Run" id="run" 
+               style="margin-top: 10px;
+                      margin-bottom: 10px;
+                      margin-right: 5px;
+                      border-radius: 5px;
+                      box-sizing: border-box;
+                      height: 30px;">
+        </input>
+    </div>
+
+    <div style="padding: 5px;
+                margin: 0; position: absolute;
+                top: 50px; bottom: 70%; left: 0;
+                right: 0;">
+        <textarea id="code" autocorrect="off" autocomplete="off" autocapitalize="off" spellcheck="false"
+                  style="width: 100%; height:100%; white-space: pre-wrap;"
+                  onkeydown="if (event.keyCode===9) {
+                        var v = this.value; 
+                        var s = this.selectionStart;
+                        var e = this.selectionEnd;
+                        this.value = v.substring(0, s) + ' '.repeat(4) +v.substring(e);
+                        this.selectionEnd = s + 4;
+                        return false;}">contract Foo:
+    def add(lhs: u8, rhs: u8) -> u8:
+        return lhs + rhs
+
+    pub def __main__() -> u8:
+        return self.add(u8(1), u8(2))
+
+contract Bar:
+    def sub(lhs: u8, rhs: u8) -> u8:
+        return lhs - rhs
+
+    pub def __main__() -> u8:
+        return self.sub(u8(100), u8(31))
+        </textarea>
+    </div>
+
+    <div style="padding: 5px;
+                margin: 0; position: absolute;
+                top: 35%; bottom: 25%; left: 0;
+                right: 0;">
+        <textarea id="result" autocorrect="off" autocomplete="off" autocapitalize="off" spellcheck="false" disabled
+                  style="width: 100%; height:100%; white-space: pre-wrap;">
+        </textarea>
+    </div>
+
+
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/0.10.0/lodash.min.js"></script>
+    <script src="./browser-solc.min.js" type="text/javascript"></script>
+    <script src="./bootstrap.js"></script>
+  </body>
+</html>

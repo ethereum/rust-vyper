@@ -1,0 +1,29 @@
+[package]
+name = "playground"
+version = "0.1.0"
+authors = ["Yoshitomo Nakanishi <yurayura.rounin.3@gmail.com>"]
+edition = "2018"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+fe-compiler = { path = "../compiler" }
+serde = { version = "1.0", features = ["derive"] }
+wasm-bindgen = { version = "0.2", features = ["serde-serialize"] }
+wee_alloc = "0.4.5"
+evm-runtime = "0.18"
+evm = "0.18"
+hex = "0.4"
+ethabi = "12.0"
+stringreader = "0.1"
+primitive-types = { version = "0.7", default-features = false, features = ["rlp"] }
+console_error_panic_hook = "0.1.6"
+
+[dev-dependencies]
+wasm-bindgen-test = "0.3.13"
+
+# `wasm-opt` is on by default in for the release profile, but it can be
+# disabled by setting it to `false`
+[package.metadata.wasm-pack.profile.release]
+wasm-opt = false

@@ -11,7 +11,7 @@ categories = ["cryptography::cryptocurrencies", "command-line-utilities", "devel
 readme = "README.md"
 
 [workspace]
-members = [".", "parser", "compiler"]
+members = [".", "parser", "compiler", "playground"]
 
 [features]
 solc-backend = ["fe-compiler/solc-backend"]
