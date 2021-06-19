@@ -4,12 +4,12 @@ use serde::{Deserialize, Serialize};
 use std::fmt;
 use vec1::Vec1;
 
-#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, Eq, Hash, Clone)]
 pub struct Module {
     pub body: Vec<ModuleStmt>,
 }
 
-#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, Eq, Hash, Clone)]
 pub enum ModuleStmt {
     Pragma(Node<Pragma>),
     Import(Node<Import>),
@@ -18,12 +18,12 @@ pub enum ModuleStmt {
     Struct(Node<Struct>),
 }
 
-#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, Eq, Hash, Clone)]
 pub struct Pragma {
     pub version_requirement: Node<String>,
 }
 
-#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, Eq, Hash, Clone)]
 pub enum Import {
     Simple {
         names: Vec<Node<SimpleImportName>>,
@@ -34,26 +34,26 @@ pub enum Import {
     },
 }
 
-#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, Eq, Hash, Clone)]
 pub struct TypeAlias {
     pub name: Node<String>,
     pub typ: Node<TypeDesc>,
 }
 
-#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, Eq, Hash, Clone)]
 pub struct Contract {
     pub name: Node<String>,
     pub fields: Vec<Node<Field>>,
     pub body: Vec<ContractStmt>,
 }
 
-#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, Eq, Hash, Clone)]
 pub struct Struct {
     pub name: Node<String>,
     pub fields: Vec<Node<Field>>,
 }
 
-#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, Eq, Hash, Clone)]
 pub enum TypeDesc {
     Unit,
     Base {
@@ -72,7 +72,7 @@ pub enum TypeDesc {
     },
 }
 
-#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, Eq, Hash, Clone)]
 pub enum GenericArg {
     TypeDesc(Node<TypeDesc>),
     Int(Node<usize>),
@@ -86,13 +86,13 @@ impl Spanned for GenericArg {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, Eq, Hash, Clone)]
 pub struct SimpleImportName {
     pub path: Vec<Node<String>>,
     pub alias: Option<Node<String>>,
 }
 
-#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, Eq, Hash, Clone)]
 pub enum FromImportPath {
     Absolute {
         path: Vec<Node<String>>,
@@ -103,20 +103,20 @@ pub enum FromImportPath {
     },
 }
 
-#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, Eq, Hash, Clone)]
 pub enum FromImportNames {
     Star,
     List(Vec<Node<FromImportName>>),
 }
 
-#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, Eq, Hash, Clone)]
 pub struct FromImportName {
     pub name: Node<String>,
     pub alias: Option<Node<String>>,
 }
 
 /// struct or contract field, with optional 'pub' and 'const' qualifiers
-#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, Eq, Hash, Clone)]
 pub struct Field {
     pub is_pub: bool,
     pub is_const: bool,
@@ -125,19 +125,19 @@ pub struct Field {
     pub value: Option<Node<Expr>>,
 }
 
-#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, Eq, Hash, Clone)]
 pub enum ContractStmt {
     Event(Node<Event>),
     Function(Node<Function>),
 }
 
-#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, Eq, Hash, Clone)]
 pub struct Event {
     pub name: Node<String>,
     pub fields: Vec<Node<EventField>>,
 }
 
-#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, Eq, Hash, Clone)]
 pub struct Function {
     pub is_pub: bool,
     pub name: Node<String>,
@@ -146,20 +146,20 @@ pub struct Function {
     pub body: Vec<Node<FuncStmt>>,
 }
 
-#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, Eq, Hash, Clone)]
 pub struct EventField {
     pub is_idx: bool,
     pub name: Node<String>,
     pub typ: Node<TypeDesc>,
 }
 
-#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, Eq, Hash, Clone)]
 pub struct FunctionArg {
     pub name: Node<String>,
     pub typ: Node<TypeDesc>,
 }
 
-#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, Eq, Hash, Clone)]
 #[allow(clippy::large_enum_variant)]
 pub enum FuncStmt {
     Return {
@@ -212,13 +212,13 @@ pub enum FuncStmt {
     },
 }
 
-#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, Eq, Hash, Clone)]
 pub enum VarDeclTarget {
     Name(String),
     Tuple(Vec<Node<VarDeclTarget>>),
 }
 
-#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, Eq, Hash, Clone)]
 pub enum Expr {
     Ternary {
         if_expr: Box<Node<Expr>>,
@@ -270,19 +270,19 @@ pub enum Expr {
     Unit,
 }
 
-#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, Eq, Hash, Clone)]
 pub struct CallArg {
     pub label: Option<Node<String>>,
     pub value: Node<Expr>,
 }
 
-#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, Eq, Hash, Clone)]
 pub enum BoolOperator {
     And,
     Or,
 }
 
-#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, Eq, Hash, Clone)]
 pub enum BinOperator {
     Add,
     Sub,
@@ -297,14 +297,14 @@ pub enum BinOperator {
     BitAnd,
 }
 
-#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, Eq, Hash, Clone)]
 pub enum UnaryOperator {
     Invert,
     Not,
     USub,
 }
 
-#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, Eq, Hash, Clone)]
 pub enum CompOperator {
     Eq,
     NotEq,

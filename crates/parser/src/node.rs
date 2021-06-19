@@ -11,7 +11,7 @@ impl NodeId {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, Eq, Hash, Clone)]
 pub struct Node<T> {
     pub kind: T,
     #[serde(skip_serializing, skip_deserializing)]
