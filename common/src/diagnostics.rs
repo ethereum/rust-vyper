@@ -1,13 +1,49 @@
+#![allow(unused_variables, unused_mut)] // XXX
 use crate::files::{FileStore, SourceFileId};
 use crate::Span;
-pub use codespan_reporting::diagnostic::{
-    Diagnostic as CsDiagnostic, Label as CsLabel, LabelStyle, Severity,
-};
+use codespan_reporting::diagnostic as cs;
 use codespan_reporting::term;
+pub use cs::Severity;
 use term::termcolor::{BufferWriter, ColorChoice};
 
-pub type Diagnostic = CsDiagnostic<SourceFileId>;
+#[derive(Debug, PartialEq, Eq, Hash, Clone)]
+pub struct Diagnostic {
+    pub severity: Severity,
+    pub message: String,
+    pub labels: Vec<Label>,
+    pub notes: Vec<String>,
+}
+impl Diagnostic {
+    pub fn into_cs(self, file_id: SourceFileId) -> cs::Diagnostic<SourceFileId> {
+        cs::Diagnostic {
+            severity: self.severity,
+            code: None,
+            message: self.message,
+            labels: self
+                .labels
+                .into_iter()
+                .map(|label| label.into_cs_label(file_id))
+                .collect(),
+            notes: self.notes,
+        }
+    }
+}
 
+#[derive(Debug, PartialEq, Eq, Hash, Clone, Copy)]
+pub enum LabelStyle {
+    Primary,
+    Secondary,
+}
+impl Into<cs::LabelStyle> for LabelStyle {
+    fn into(self) -> cs::LabelStyle {
+        match self {
+            LabelStyle::Primary => cs::LabelStyle::Primary,
+            LabelStyle::Secondary => cs::LabelStyle::Secondary,
+        }
+    }
+}
+
+#[derive(Debug, PartialEq, Eq, Hash, Clone)]
 pub struct Label {
     pub style: LabelStyle,
     pub span: Span,
@@ -35,9 +71,9 @@ impl Label {
     }
 
     /// Convert into a [`codespan_reporting::Diagnostic::Label`]
-    pub fn into_cs_label(self, file_id: SourceFileId) -> CsLabel<SourceFileId> {
-        CsLabel {
-            style: self.style,
+    pub fn into_cs_label(self, file_id: SourceFileId) -> cs::Label<SourceFileId> {
+        cs::Label {
+            style: self.style.into(),
             file_id,
             range: self.span.into(),
             message: self.message,
@@ -52,7 +88,8 @@ pub fn print_diagnostics(diagnostics: &[Diagnostic], files: &FileStore) {
     let config = term::Config::default();
 
     for diag in diagnostics {
-        term::emit(&mut buffer, &config, files, &diag).unwrap();
+        todo!()
+        // term::emit(&mut buffer, &config, files, &diag).unwrap();
     }
     // If we use `writer` here, the output won't be captured by rust's test system.
     eprintln!("{}", std::str::from_utf8(buffer.as_slice()).unwrap());
@@ -65,7 +102,8 @@ pub fn diagnostics_string(diagnostics: &[Diagnostic], files: &FileStore) -> Stri
     let config = term::Config::default();
 
     for diag in diagnostics {
-        term::emit(&mut buffer, &config, files, &diag).expect("failed to emit diagnostic");
+        todo!()
+        // term::emit(&mut buffer, &config, files, &diag).expect("failed to emit diagnostic");
     }
     std::str::from_utf8(buffer.as_slice()).unwrap().to_string()
 }

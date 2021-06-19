@@ -16,6 +16,8 @@ num-traits = "0.2.14"
 strum = { version = "0.20.0", features = ["derive"] }
 vec1 = "1.8.0"
 semver = "1.0.0"
+salsa = "0.16.1"
+indexmap = "1.6.2"
 
 [dev-dependencies]
 insta = "1.7.1"

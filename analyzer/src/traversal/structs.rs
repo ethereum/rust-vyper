@@ -2,11 +2,11 @@ use fe_common::diagnostics::Label;
 use fe_parser::ast as fe;
 use fe_parser::node::Node;
 
+use crate::db::AnalyzerDb;
 use crate::errors::{AlreadyDefined, FatalError};
 use crate::namespace::scopes::{ModuleScope, Scope, Shared};
 use crate::namespace::types::{FixedSize, Struct, Type};
 use crate::traversal::types::type_desc;
-use crate::Context;
 use std::rc::Rc;
 
 pub fn struct_def(
@@ -18,7 +18,7 @@ pub fn struct_def(
     let mut val = Struct::new(&name.kind);
     for field in fields {
         let fe::Field { name, typ, .. } = &field.kind;
-        let field_type = type_desc(&Scope::Module(Rc::clone(&module_scope)), context, typ)?;
+        let field_type = type_desc(&Scope::Module(Rc::clone(&module_scope)), context, &typ)?;
         if let Type::Base(base_typ) = field_type {
             if let Err(AlreadyDefined) = val.add_field(&name.kind, &FixedSize::Base(base_typ)) {
                 let first_definition = fields
@@ -53,23 +53,47 @@ pub fn struct_def(
             context.not_yet_implemented("non-base type struct fields", field.span)
         }
     }
-    if let Err(AlreadyDefined) = module_scope
-        .borrow_mut()
-        .add_type_def(&name.kind, Type::Struct(val))
-    {
-        context.fancy_error(
-            "a struct with the same name already exists",
-            // TODO: figure out how to include the previously defined struct
-            vec![Label::primary(
-                struct_def.span,
-                format!("Conflicting definition of struct `{}`", name.kind),
-            )],
-            vec![format!(
-                "Note: Give one of the `{}` structs a different name",
-                name.kind
-            )],
-        )
-    }
+    // XXX: this should be done at the module analysis level
+    // if let Err(AlreadyDefined) = module_scope
+    //     .borrow_mut()
+    //     .add_type_def(&name.kind, Type::Struct(val))
+    // {
+    //     context.add_diagnostic(errors::fancy_error(
+    //         "a struct with the same name already exists",
+    //         // TODO: figure out how to include the previously defined struct
+    //         vec![Label::primary(
+    //             struct_def.span,
+    //             format!("Conflicting definition of struct `{}`", name.kind),
+    //         )],
+    //         vec![format!(
+    //             "Note: Give one of the `{}` structs a different name",
+    //             name.kind
+    //         )],
+    //     ))
+    // }
 
     Ok(())
 }
+
+// pub fn struct_type_query(
+//     db: &dyn AnalyzerDb,
+//     module: ModuleId,
+//     struct_def: StructDefId,
+// ) -> Result<(), SemanticError> {
+//     let struct_def = struct_def.data(context.db);
+//     let struct_name = &struct_def.name.kind;
+//     let mut val = Struct::new(struct_name);
+//     for field in &struct_def.fields {
+//         let Field { name, typ, .. } = &field.kind;
+//         let field_type = type_desc(&Scope::Module(Rc::clone(&module_scope)), context, &typ)?;
+//         if let Type::Base(base_typ) = field_type {
+//             val.add_field(&name.kind, &FixedSize::Base(base_typ))?;
+//         } else {
+//             context.not_yet_implemented("non-base type struct fields", field.span)
+//         }
+//     }
+//     module_scope
+//         .borrow_mut()
+//         .add_type_def(struct_name, Type::Struct(val))?;
+//     Ok(())
+// }

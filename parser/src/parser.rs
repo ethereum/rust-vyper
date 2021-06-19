@@ -398,9 +398,8 @@ impl<'a> Parser<'a> {
     pub fn error<S: Into<String>>(&mut self, span: Span, message: S) {
         self.diagnostics.push(Diagnostic {
             severity: Severity::Error,
-            code: None,
             message: message.into(),
-            labels: vec![Label::primary(span, "").into_cs_label(self.file_id)],
+            labels: vec![Label::primary(span, "")],
             notes: vec![],
         })
     }
@@ -413,14 +412,8 @@ impl<'a> Parser<'a> {
         labels: Vec<Label>,
         notes: Vec<String>,
     ) {
-        let labels = labels
-            .into_iter()
-            .map(|lbl| lbl.into_cs_label(self.file_id))
-            .collect();
-
         self.diagnostics.push(Diagnostic {
             severity: Severity::Error,
-            code: None,
             message: message.into(),
             labels,
             notes,

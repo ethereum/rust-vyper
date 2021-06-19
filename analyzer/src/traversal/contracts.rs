@@ -1,15 +1,122 @@
 use crate::constants;
-use crate::context::{Context, ContractAttributes};
-use crate::errors::{AlreadyDefined, FatalError};
+use crate::context::{Analysis, AnalyzerContext, Context, ContractAttributes};
+use crate::db::AnalyzerDb;
+use crate::errors::{self, AlreadyDefined, FatalError};
 use crate::namespace::events::EventDef;
+use crate::namespace::items::ContractId;
 use crate::namespace::scopes::{ContractScope, ModuleScope, Scope, Shared};
-use crate::namespace::types::{Contract, FixedSize, Type};
-use crate::traversal::{functions, types};
-use fe_common::diagnostics::Label;
+use crate::namespace::types::{self, FixedSize, Type};
+use crate::traversal::{functions, types::type_desc_fixed_size};
+use fe_common::diagnostics::{Diagnostic, Label};
 use fe_common::utils::humanize::pluralize_conditionally;
 use fe_parser::ast as fe;
 use fe_parser::node::Node;
 use std::rc::Rc;
+
+// Contract info is split between 3 structs.
+// Should be 2:
+//  - basic type outline (name, fns)
+//  - analysis (created from context object)
+//      diagnostics
+//      list_exprs, static strings, created_contracts, tuples(?)
+
+// types::Contract
+//     pub name: String,
+//     pub functions: Vec<FunctionAttributes>,
+
+// scopes::ContractScope
+//     pub name: String,
+//     pub parent: Shared<ModuleScope>,
+// UNUSED pub interface: Vec<String>,
+//     pub event_defs: BTreeMap<String, EventDef>,
+//     pub field_defs: BTreeMap<String, ContractFieldDef>,
+//     pub function_defs: BTreeMap<String, ContractFunctionDef>,
+//     pub list_expressions: BTreeSet<Array>,
+//     pub string_defs: BTreeSet<String>,
+//     pub created_contracts: BTreeSet<String>,
+//     num_fields: usize,
+
+// context::ContractAttributes
+//     pub public_functions: Vec<FunctionAttributes>,
+//     pub init_function: Option<FunctionAttributes>,
+//     pub events: Vec<EventDef>,
+//     pub list_expressions: BTreeSet<Array>,
+//     pub string_literals: BTreeSet<String>,
+//     pub structs: Vec<Struct>,
+//     pub external_contracts: Vec<Contract>,
+//     pub created_contracts: BTreeSet<String>,
+
+fn contract_type_query(db: &dyn AnalyzerDb, contract: ContractId) -> Analysis<Rc<types::Contract>> {
+    let fe::ContractDef {
+        name,
+        fields: _,
+        body,
+    } = contract.data(db);
+
+    struct Context {}
+    impl AnalyzerContext for Context {
+        fn resolve_type(&self, name: &str) -> Option<Type> {}
+        fn add_diagnostic(&mut self, diag: Diagnostic) {
+            self.diagnostics.push(diag)
+        }
+    }
+
+    todo!()
+
+    // for item in body {
+    //     match item {
+    //         fe::ContractStmt::EventDef(_) => {}
+    //         fe::ContractStmt::FuncDef(func) => {}
+    //     }
+    // }
+
+    // Analysis {
+    //     value: Rc::new(types::Contract {
+    //         name: name.clone(),
+    //         functions,
+    //     }),
+    //     diagnostics,
+    // }
+}
+
+fn contract_field_query(
+    db: &dyn AnalyzerDb,
+    contract: ContractId,
+    field: String,
+) -> Option<(Rc<Type>, usize)> {
+    let type_map = db.contract_field_types_query(contract).value;
+    type_map
+        .get_full(field)
+        .map(|index, _name, typ| (index, typ))
+}
+
+fn contract_field_types_query(
+    db: &dyn AnalyzerDb,
+    contract: ContractId,
+) -> Analysis<Rc<indexmap::IndexMap<String, Type>>> {
+    let fe::ContractDef { name, fields, body } = contract.data(db).ast;
+    let mut diagnostics = vec![];
+    for field in fields {
+        if field.is_pub {
+            diagnostics.push(errors::not_yet_implemented(
+                "contract `pub` fields",
+                field.span(db),
+            ));
+        }
+        if field.is_const {
+            diagnostics.push(errors::not_yet_implemented(
+                "contract `const` fields",
+                field.span(db),
+            ));
+        }
+        if let Some(node) = field.value {
+            diagnostics.push(errors::not_yet_implemented(
+                "contract field initial value assignment",
+                node.span,
+            ));
+        }
+    }
+}
 
 /// Gather context information for contract definitions and check for type
 /// errors.
@@ -18,7 +125,7 @@ pub fn contract_def(
     context: &mut Context,
     stmt: &Node<fe::Contract>,
 ) -> Result<Shared<ContractScope>, FatalError> {
-    let fe::Contract { name, body, .. } = &stmt.kind;
+    let fe::Contract { name, body, .. } = self.data(db);
     let contract_scope = ContractScope::new(&name.kind, Rc::clone(&module_scope));
 
     // Contract fields are evaluated in the next pass together with function bodies
@@ -209,4 +316,39 @@ fn event_field(
             types::type_desc_fixed_size(&Scope::Contract(scope), context, &typ)?,
         ),
     ))
+}
+
+struct FunctionAnalysisContext {
+    // Need type name map
+
+    // parent: &'a mut ModuleContext,
+    diagnostics: Vec<Diagnostic>,
+    pub list_expressions: BTreeSet<types::Array>,
+    pub tuples: BTreeSet<types::Tuple>,
+    pub static_strings: BTreeSet<String>,
+    pub created_contracts: BTreeSet<String>,
+}
+
+impl AnalyzerContext for ContractContext {
+    fn resolve_type(&self, name: &str) -> Option<Type> {
+        todo!()
+    }
+    fn add_diagnostic(&mut self, diag: Diagnostic) {
+        self.diagnostics.push(diag)
+    }
+}
+
+struct FieldAnalysisContext<'a> {
+    db: &dyn AnalyzerDb,
+    diags: Vec<Diagnostic>,
+}
+impl<'a> AnalyzerContext for FooContext<'a> {
+    fn resolve_type(&self, name: &str) -> Option<Type> {
+        // need a moduleid here
+        todo!()
+    }
+
+    fn add_diagnostic(&mut self, diag: Diagnostic) {
+        self.diags.push(diag)
+    }
 }

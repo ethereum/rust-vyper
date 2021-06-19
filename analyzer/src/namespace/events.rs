@@ -1,7 +1,7 @@
 use crate::namespace::types::{AbiEncoding, FixedSize};
 use fe_common::utils::keccak;
 
-#[derive(Clone, Debug, PartialEq, Hash)]
+#[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub struct EventDef {
     pub name: String,
     pub topic: String,
