@@ -288,31 +288,7 @@ impl<'a, 'b> BlockScope<'a, 'b> {
     // pub fn get_module_type_defs<B, F: FnMut(&Type) -> Option<B>>(&self, predicate: F) -> Vec<B> {
     //     self.module_scope().borrow().get_type_defs(predicate)
     // }
-
-    // /// Gets a type definition by name.
-    // pub fn get_module_type_def(&self, name: &str) -> Option<Type> {
-    //     self.module_scope().borrow().get_type_def(name)
-    // }
 }
-
-// #[derive(Clone, Debug, PartialEq)]
-// pub struct ContractFunctionDef {
-//     pub is_public: bool,
-//     pub name: String,
-//     pub params: Vec<(String, FixedSize)>,
-//     pub return_type: FixedSize,
-//     pub scope: Shared<BlockScope>,
-// }
-
-// #[derive(Clone, Debug, PartialEq)]
-// pub struct ModuleScope {
-//     /// Type definitions in a module.
-//     pub type_defs: BTreeMap<String, Type>,
-//     /// Tuples that were used inside of a module.
-//     ///
-//     /// BTreeSet is used for ordering, this way items are retrieved in the same order every time.
-//     pub tuples_used: BTreeSet<Tuple>,
-// }
 
 // #[derive(Clone, Debug, PartialEq)]
 // pub struct ContractScope {
@@ -326,107 +302,6 @@ impl<'a, 'b> BlockScope<'a, 'b> {
 //     pub string_defs: BTreeSet<String>,
 //     pub created_contracts: BTreeSet<String>,
 //     num_fields: usize,
-// }
-
-// #[derive(Clone, Debug, PartialEq)]
-// pub enum Scope {
-//     Module(Shared<ModuleScope>),
-//     Contract(Shared<ContractScope>),
-//     Block(Shared<BlockScope>),
-// }
-
-// impl Scope {
-//     pub fn module_scope(&self) -> Shared<ModuleScope> {
-//         match self {
-//             Scope::Module(scope) => Rc::clone(scope),
-//             Scope::Contract(scope) => Rc::clone(&scope.borrow().parent),
-//             Scope::Block(scope) => Rc::clone(&scope.borrow().contract_scope().borrow().parent),
-//         }
-//     }
-// }
-
-// impl ModuleScope {
-//     pub fn new() -> Shared<Self> {
-//         Rc::new(RefCell::new(ModuleScope {
-//             type_defs: BTreeMap::new(),
-//             tuples_used: BTreeSet::new(),
-//         }))
-//     }
-
-//     /// Add a type definiton to the scope
-//     pub fn add_type_def(&mut self, name: &str, typ: Type) -> Result<(), AlreadyDefined> {
-//         match self.type_defs.entry(name.to_owned()) {
-//             Entry::Occupied(_) => Err(AlreadyDefined),
-//             Entry::Vacant(entry) => Ok(entry.insert(typ)).map(|_| ()),
-//         }
-//     }
-
-//     /// Filter module scope for type definitions that match the given predicate
-//     pub fn get_type_defs<B, F: FnMut(&Type) -> Option<B>>(&self, predicate: F) -> Vec<B> {
-//         self.type_defs.values().filter_map(predicate).collect()
-//     }
-
-//     /// Gets a type definition by name.
-//     pub fn get_type_def(&self, name: &str) -> Option<Type> {
-//         self.type_defs.get(name).map(|typ| typ.to_owned())
-//     }
-// }
-
-// impl ContractScope {
-//     pub fn new(name: &str, parent: Shared<ModuleScope>) -> Shared<Self> {
-//         Rc::new(RefCell::new(ContractScope {
-//             name: name.to_owned(),
-//             parent,
-//             function_defs: BTreeMap::new(),
-//             event_defs: BTreeMap::new(),
-//             field_defs: BTreeMap::new(),
-//             string_defs: BTreeSet::new(),
-//             interface: vec![],
-//             created_contracts: BTreeSet::new(),
-//             list_expressions: BTreeSet::new(),
-//             num_fields: 0,
-//         }))
-//     }
-
-//     /// Return the module scope that the contract scope inherits from
-//     pub fn module_scope(&self) -> Shared<ModuleScope> {
-//         Rc::clone(&self.parent)
-//     }
-
-//     // these should be on ModuleId:
-//     //
-//     // /// Filter module scope for type definitions that match the given predicate
-//     // pub fn get_module_type_defs<B, F: FnMut(&Type) -> Option<B>>(&self, predicate: F) -> Vec<B> {
-//     //     self.module_scope().borrow().get_type_defs(predicate)
-//     // }
-//     // /// Lookup contract event definition by its name.
-//     // pub fn event_def(&self, name: &str) -> Option<EventDef> {
-//     //     self.event_defs.get(name).map(|def| (*def).clone())
-//     // }
-//     // /// Lookup contract field definition by its name.
-//     // pub fn field_def(&self, name: &str) -> Option<ContractFieldDef> {
-//     //     self.field_defs.get(name).map(|def| (*def).clone())
-//     // }
-//     // /// Lookup contract function definition by its name.
-//     // pub fn function_def(&self, name: &str) -> Option<ContractFunctionDef> {
-//     //     self.function_defs.get(name).map(|def| (*def).clone())
-//     // }
-
-//     // these should be moved to the lowering/yulgen stages:
-//     //
-//     // /// Add a static string definition to the scope.
-//     // pub fn add_string(&mut self, value: &str) {
-//     //     self.string_defs.insert(value.to_owned());
-//     // }
-//     // /// Add the name of another contract that has been created within this
-//     // /// contract.
-//     // pub fn add_created_contract(&mut self, name: &str) {
-//     //     self.created_contracts.insert(name.to_owned());
-//     // }
-//     // /// Add the array type of a list expression that was used within the contract.
-//     // pub fn add_used_list_expression(&mut self, typ: Array) {
-//     //     self.list_expressions.insert(typ);
-//     // }
 // }
 
 /// temporary helper until `BTreeMap::try_insert` is stabilized

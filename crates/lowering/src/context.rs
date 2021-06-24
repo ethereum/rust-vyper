@@ -1,10 +1,10 @@
-use fe_analyzer::context::Context as AnalyzerContext;
+use fe_analyzer::db::AnalyzerDb;
 use fe_analyzer::namespace::types::{Array, Tuple};
 use indexmap::IndexSet;
 use std::collections::BTreeSet;
 
 pub struct ModuleContext<'a> {
-    pub analysis: &'a AnalyzerContext,
+    pub db: &'a dyn AnalyzerDb,
 
     /// Tuples that were used inside of a module,
     /// and the generated name of the resulting struct.
@@ -15,7 +15,7 @@ pub struct ModuleContext<'a> {
 }
 
 impl<'a> ModuleContext<'a> {
-    pub fn new(analysis: &'a AnalyzerContext) -> Self {
+    pub fn new(db: &'a dyn AnalyzerDb) -> Self {
         Self {
             analysis,
             tuples: IndexSet::new(),

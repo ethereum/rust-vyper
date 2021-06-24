@@ -2,14 +2,14 @@ use crate::context::{Context, ModuleContext};
 use crate::mappers::{contracts, types};
 use crate::names;
 use crate::utils::ZeroSpanNode;
-use fe_analyzer::context::Context as AnalyzerContext;
+use fe_analyzer::db::AnalyzerDb;
 use fe_analyzer::namespace::types::{Base, FixedSize, Tuple};
 use fe_parser::ast as fe;
 use fe_parser::node::{Node, Span};
 
 /// Lowers a module.
-pub fn module(analysis: &AnalyzerContext, module: fe::Module) -> fe::Module {
-    let mut module_context = ModuleContext::new(analysis);
+pub fn module(db: &AnalyzerDb, module: fe::Module) -> fe::Module {
+    let mut module_context = ModuleContext::new(db);
 
     let lowered_body = module
         .body

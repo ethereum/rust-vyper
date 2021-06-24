@@ -45,30 +45,6 @@ pub fn module(context: &mut Context, module: &fe::Module) -> Result<(), FatalErr
     Ok(())
 }
 
-pub fn tuples_used_query(db: &dyn AnalyzerDb, module: ModuleId) -> Rc<BTreeSet<Tuple>> {
-    todo!()
-    // let mut tuples = BTreeSet::new();
-
-    // TypeDesc::Tuple might show up in:
-    //  - TypeAlias
-    //  - contract field
-    //  - struct field (not yet allowed)
-    //  - event field (not yet allowed)
-    //  - func arg
-    //  - func return type
-    //  - vardecl
-    //  - nested in array or generic type desc
-
-    // for typedef in db.type_defs(module).values() {
-    //     collect_tuples(db.type_def_type(typedef).as_ref(), &mut tuples);
-    // }
-
-    // for contract in db.contracts(module) {
-    //     for field in db.contract_fields(contract) {
-    //     }
-    // }
-}
-
 pub fn resolve_type_query(db: &dyn AnalyzerDb, name: &str, module: ModuleId) -> Option<Rc<Type>> {
     let defs = db.type_defs(module);
     db.type_def_type(defs.get(name)?)

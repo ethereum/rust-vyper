@@ -18,7 +18,6 @@ use std::rc::Rc;
 //  - basic type outline (name, fns)
 //  - analysis (created from context object)
 //      diagnostics
-//      list_exprs, static strings, created_contracts, tuples(?)
 
 // types::Contract
 //     pub name: String,

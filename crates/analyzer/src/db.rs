@@ -3,17 +3,15 @@ use crate::namespace::items::{
     self, ContractId, EventId, FunctionId, ModuleId, StructId, TypeAliasId, TypeDefId,
 };
 use crate::namespace::{events, types};
+use fe_parser::node::NodeId;
 use indexmap::IndexMap;
+use std::collections::BTreeMap;
 use std::rc::Rc;
 
-use std::collections::BTreeMap;
-
 mod queries;
+
 // Given an item (intern) id, you should be able to get the item's parent.
 
-// crazy idea: don't collect tuples, list exprs, string literals, etc in the analyzer
-
-//
 // Plan:
 //
 // "items" = {module, contract, struct, event, function}
