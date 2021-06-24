@@ -642,7 +642,13 @@ MISSING
 
 ### 5.1.1.13. String types
 
-MISSING
+A String type.
+
+Example:
+
+```
+content: String<100>
+```
 
 ### 5.1.1.14. Event types
 

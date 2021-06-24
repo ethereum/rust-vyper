@@ -1,0 +1,17 @@
+struct TodoItem:
+   amount: u256
+   content: String<100>
+contract Foo:
+   ti1: TodoItem
+   ti2: TodoItem
+
+   pub def set_item():
+      self.ti1.content = String<100>("Fooooo")
+      self.ti2.content = String<100>("Fooooo2")
+   
+   pub def get_number() -> u256:
+      return self.ti1.amount
+   
+   pub def get_some_string() -> String<100>:
+      self.set_item()
+      return self.ti1.content.to_mem()

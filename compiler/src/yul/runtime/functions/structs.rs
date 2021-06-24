@@ -72,7 +72,11 @@ pub fn generate_get_fn(struct_type: &Struct, field_name: &str) -> yul::Statement
     // field, we must take into consideration the left-padding. The left-padding is
     // equal to the difference between the value's size and 32 bytes, so we end up
     // adding the word offset and the byte offset.
-    let field_offset = field_index * 32 + (32 - field_type.size());
+    let field_offset = if field_type.size() < 32 {
+        field_index * 32 + (32 - field_type.size())
+    } else {
+        field_index * field_type.size()
+    };
 
     let offset = literal_expression! { (field_offset) };
     function_definition! {

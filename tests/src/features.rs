@@ -1186,6 +1186,44 @@ fn create_contract_from_init() {
     })
 }
 
+#[test]
+fn struct_with_string() {
+    with_executor(&|mut executor| {
+        let string_harness = deploy_contract(&mut executor, "struct_with_string.fe", "Foo", &[]);
+
+        string_harness.test_function(
+            &mut executor,
+            "get_some_string",
+            &[],
+            Some(&string_token("Fooooo")),
+        );
+    })
+}
+
+#[test]
+fn nested_struct() {
+    with_executor(&|mut executor| {
+        let string_harness = deploy_contract(&mut executor, "nested_struct.fe", "Foo", &[]);
+
+        string_harness.test_function(
+            &mut executor,
+            "get_some_string",
+            &[],
+            Some(&string_token("Fooooo")),
+        );
+    })
+}
+
+#[test]
+fn nested_tuple() {
+    with_executor(&|mut executor| {
+        let harness = deploy_contract(&mut executor, "nested_tuple.fe", "Foo", &[]);
+
+        harness.test_function(&mut executor, "bar", &[], Some(&uint_token(1)));
+        harness.test_function(&mut executor, "bar2", &[], Some(&uint_token(2)));
+    })
+}
+
 #[rstest(
     fixture_file,
     contract_name,

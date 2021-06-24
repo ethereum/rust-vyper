@@ -1,0 +1,13 @@
+struct tt1:
+    content: String<100>
+
+struct tt2:
+    subtt3: tt1
+
+contract Foo:
+   tt4: tt2
+   pub def set_item():
+       self.tt4.subtt3.content = String<100>("Fooooo")
+   pub def get_some_string() -> String<100>:
+       self.set_item()
+       return self.tt4.subtt3.content.to_mem()
