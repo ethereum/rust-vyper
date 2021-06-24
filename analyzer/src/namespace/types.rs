@@ -107,7 +107,7 @@ pub trait SafeNames {
     fn lower_snake(&self) -> String;
 }
 
-#[derive(Clone, Debug, PartialEq, Hash)]
+#[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub enum Type {
     Base(Base),
     Array(Array),
@@ -135,6 +135,7 @@ pub enum Base {
     Byte,
     Address,
     Unit,
+    Unknown,
 }
 
 #[derive(Copy, Clone, Debug, Hash, PartialEq, PartialOrd, Ord, Eq, IntoStaticStr)]
@@ -161,7 +162,7 @@ pub struct Array {
     pub inner: Base,
 }
 
-#[derive(Clone, Debug, PartialEq, Hash)]
+#[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub struct Map {
     pub key: Base,
     pub value: Box<Type>,
@@ -280,6 +281,10 @@ impl Type {
     pub fn int(int_type: Integer) -> Self {
         Type::Base(Base::Numeric(int_type))
     }
+
+    pub fn unknown() -> Self {
+        Type::Base(Base::Unknown)
+    }
 }
 
 pub trait TypeDowncast {
@@ -375,6 +380,10 @@ impl FixedSize {
     pub fn unit() -> Self {
         FixedSize::Base(Base::Unit)
     }
+
+    pub fn unknown() -> Self {
+        FixedSize::Base(Base::Unknown)
+    }
 }
 
 impl PartialEq<Type> for FixedSize {
@@ -459,6 +468,7 @@ impl FeSized for Base {
             Base::Byte => 1,
             Base::Address => 32,
             Base::Unit => 0,
+            Base::Unknown => 0,
         }
     }
 }
@@ -558,6 +568,7 @@ impl AbiEncoding for Base {
             Base::Byte => "byte".to_string(),
             Base::Bool => "bool".to_string(),
             Base::Unit => panic!("unit type is not abi encodable"),
+            Base::Unknown => panic!("unknown type is not abi encodable"),
         }
     }
 
@@ -589,6 +600,7 @@ impl AbiEncoding for Base {
             Base::Address => (32, 32),
             Base::Byte => (1, 1),
             Base::Unit => panic!("unit type is not abi encodable"),
+            Base::Unknown => panic!("unknown type is not abi encodable"),
         };
         AbiType::Uint {
             size: AbiUintSize {
@@ -767,6 +779,7 @@ impl SafeNames for Base {
             Base::Byte => "byte".to_string(),
             Base::Bool => "bool".to_string(),
             Base::Unit => "unit".to_string(),
+            Base::Unknown => unreachable!(),
         }
     }
 }
@@ -848,6 +861,7 @@ impl fmt::Display for Base {
             Base::Byte => "byte",
             Base::Address => "address",
             Base::Unit => "()",
+            Base::Unknown => "unknown",
         };
         write!(f, "{}", name)
     }

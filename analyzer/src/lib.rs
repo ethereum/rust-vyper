@@ -4,40 +4,44 @@
 //! any semantic errors within a given AST and produces a `Context` instance
 //! that can be used to query contextual information attributed to AST nodes.
 
+#![allow(unused_imports, unused_variables, unused_mut)] // XXX
+
 pub mod builtins;
 pub mod constants;
 pub mod context;
+mod db;
 pub mod errors;
 pub mod namespace;
 mod operations;
 mod traversal;
 
+use crate::db::AnalyzerDb;
 use crate::errors::{AnalyzerError, FatalError};
-use context::Context;
+use crate::namespace::items::ModuleId;
 use fe_common::files::SourceFileId;
-use fe_parser::ast as fe;
 
 /// Performs semantic analysis of the source program and returns a `Context`
 /// instance.
-pub fn analyze(module: &fe::Module, file_id: SourceFileId) -> Result<Context, AnalyzerError> {
-    let mut context = Context::new(file_id);
-    let result = traversal::module::module(&mut context, module);
+pub fn analyze(db: &dyn AnalyzerDb, module: ModuleId) -> Result<(), AnalyzerError> {
+    todo!()
+    // let mut context = Context::new(db);
+    // let result = traversal::module::module(&mut context, module);
 
-    match result {
-        Ok(()) => {
-            if context.diagnostics.is_empty() {
-                Ok(context)
-            } else {
-                Err(AnalyzerError(context.diagnostics))
-            }
-        }
-        Err(FatalError) => {
-            if context.diagnostics.is_empty() {
-                panic!("Expected at least one error")
-            }
-            Err(AnalyzerError(context.diagnostics))
-        }
-    }
+    // match result {
+    //     Ok(()) => {
+    //         if context.diagnostics.is_empty() {
+    //             Ok(context)
+    //         } else {
+    //             Err(AnalyzerError(context.diagnostics))
+    //         }
+    //     }
+    //     Err(FatalError) => {
+    //         if context.diagnostics.is_empty() {
+    //             panic!("Expected at least one error")
+    //         }
+    //         Err(AnalyzerError(context.diagnostics))
+    //     }
+    // }
 }
 
 #[cfg(feature = "fix-context-harness")]

@@ -10,6 +10,7 @@ pub fn index(value: Type, index: Type) -> Result<Type, IndexingError> {
     match value {
         Type::Array(array) => index_array(array, index),
         Type::Map(map) => index_map(map, index),
+        Type::Base(Base::Unknown) => Ok(Type::unknown()),
         Type::Base(_) => Err(IndexingError::NotSubscriptable),
         Type::Tuple(_) => Err(IndexingError::NotSubscriptable),
         Type::String(_) => Err(IndexingError::NotSubscriptable),
