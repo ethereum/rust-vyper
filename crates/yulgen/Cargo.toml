@@ -14,7 +14,7 @@ fe-parser = {path = "../parser", version = "^0.6.1-alpha"}
 indexmap = "1.6.2"
 maplit = "1.0.2"
 num-bigint = "0.4.0"
-
+salsa = "0.16.1"
 # This fork contains the shorthand macros and some other necessary updates.
 yultsur = { git = "https://github.com/g-r-a-n-t/yultsur"}
 

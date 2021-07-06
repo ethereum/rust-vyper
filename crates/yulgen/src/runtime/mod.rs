@@ -2,10 +2,34 @@ pub mod abi_dispatcher;
 pub mod functions;
 use crate::Context;
 use fe_analyzer::context::FunctionAttributes;
-use fe_analyzer::namespace::types::{AbiDecodeLocation, Contract, FixedSize};
+use fe_analyzer::namespace::types::{AbiDecodeLocation, Contract, FixedSize, AbiEncoding};
 use fe_parser::ast as fe;
 use fe_parser::node::Node;
 use yultsur::*;
+use functions::abi as abi_functions;
+
+#[salsa::query_group(RuntimeBuilderStorage)]
+trait RuntimeBuilder {
+    fn encoding_functions(&self, key: Vec<Vec<FixedSize>>) -> Vec<yul::Statement>;
+}
+
+fn encoding_functions(
+    _db: &dyn RuntimeBuilder,
+    key: Vec<Vec<FixedSize>>
+) -> Vec<yul::Statement> {
+    let mut yul_functions: Vec<_> = key.into_iter().map(abi_functions::encode).collect();
+    yul_functions.sort();
+    yul_functions.dedup();
+    yul_functions
+}
+
+#[salsa::database(RuntimeBuilderStorage)]
+#[derive(Default)]
+struct DatabaseStruct {
+    storage: salsa::Storage<Self>,
+}
+
+impl salsa::Database for DatabaseStruct {}
 
 /// Builds the set of function statements that are needed during runtime.
 pub fn build(context: &Context, contract: &Node<fe::Contract>) -> Vec<yul::Statement> {
@@ -65,7 +89,7 @@ pub fn build(context: &Context, contract: &Node<fe::Contract>) -> Vec<yul::State
                 structs_batch,
             ]
             .concat();
-            functions::abi::batch_encode(batch)
+            DatabaseStruct::default().encoding_functions(batch)
         };
         let decoding = {
             let public_functions_batch = attributes
