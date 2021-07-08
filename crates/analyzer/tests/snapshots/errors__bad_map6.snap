@@ -3,16 +3,22 @@ source: crates/analyzer/tests/errors.rs
 expression: "error_string(\"[snippet]\", &src)"
 
 ---
-error: `map` key and value must be types
+error: `Map` key must be a type
   ┌─ [snippet]:3:10
   │
 3 │   x: Map<10, 20>
   │          ^^ this should be a type name
 
-error: `map` key and value must be types
+error: `Map` value must be a type
   ┌─ [snippet]:3:14
   │
 3 │   x: Map<10, 20>
   │              ^^ this should be a type name
+
+error: invalid variable type
+  ┌─ [snippet]:3:6
+  │
+3 │   x: Map<10, 20>
+  │      ^^^^^^^^^^^ `Map` type can only be used as a contract field
 
 

@@ -11,4 +11,16 @@ error: `Map` expects 2 arguments, but 1 was provided
   │      │    
   │      expects 2 arguments
 
+error: undefined type
+  ┌─ [snippet]:3:10
+  │
+3 │   x: Map<y>
+  │          ^ this type name has not been defined
+
+error: invalid variable type
+  ┌─ [snippet]:3:6
+  │
+3 │   x: Map<y>
+  │      ^^^^^^ `Map` type can only be used as a contract field
+
 

@@ -11,10 +11,10 @@ error: `Map` expects 2 arguments, but 3 were provided
   │      │            
   │      expects 2 arguments
 
-error: Expected a value with a fixed size
+error: invalid variable type
   ┌─ [snippet]:3:6
   │
 3 │   x: Map<u8, u8, u8>
-  │      ^^^^^^^^^^^^^^^
+  │      ^^^^^^^^^^^^^^^ `Map` type can only be used as a contract field
 
 

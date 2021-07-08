@@ -39,12 +39,11 @@ pub struct Parser<'a> {
 
     /// The diagnostics (errors and warnings) emitted during parsing.
     pub diagnostics: Vec<Diagnostic>,
-    file_id: SourceFileId,
 }
 
 impl<'a> Parser<'a> {
     /// Create a new parser for a source code string and associated file id.
-    pub fn new(content: &'a str, file_id: SourceFileId) -> Self {
+    pub fn new(content: &'a str) -> Self {
         Parser {
             lexer: Lexer::new(content),
             buffered: vec![],
@@ -57,7 +56,6 @@ impl<'a> Parser<'a> {
             }],
             indent_style: None,
             diagnostics: vec![],
-            file_id,
         }
     }
 
@@ -468,7 +466,6 @@ impl<'a, 'b> BTParser<'a, 'b> {
             indent_stack: snapshot.indent_stack.clone(),
             indent_style: snapshot.indent_style,
             diagnostics: Vec::new(),
-            file_id: snapshot.file_id,
         };
         Self { snapshot, parser }
     }

@@ -62,9 +62,9 @@ pub fn type_error(
 
 pub fn not_yet_implemented(feature: impl Display, span: Span) -> Diagnostic {
     error(
-        "feature not yet implemented",
+        format!("feature not yet implemented: {}", feature),
         span,
-        format!("{} is not yet implemented", feature),
+        "not yet implemented",
     )
 }
 

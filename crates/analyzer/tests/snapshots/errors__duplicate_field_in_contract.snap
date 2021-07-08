@@ -3,12 +3,12 @@ source: crates/analyzer/tests/errors.rs
 expression: "error_string(&path, &src)"
 
 ---
-error: a contract field with the same name already exists
-  ┌─ compile_errors/duplicate_field_in_contract.fe:3:5
+error: duplicate field names in `contract Foo`
+  ┌─ compile_errors/duplicate_field_in_contract.fe:2:5
   │
+2 │     bar: u8
+  │     ^^^^^^^ `bar` first defined here
 3 │     bar: u8
-  │     ^^^^^^^ Conflicting definition of field `bar`
-  │
-  = Note: Give one of the `bar` fields a different name
+  │     ------- `bar` redefined here
 
 

@@ -1,8 +1,9 @@
-use crate::context::{Analysis, FunctionAttributes, FunctionBody};
+use crate::context::{Analysis, FunctionBody};
 use crate::namespace::items::{
     self, ContractId, EventId, FunctionId, ModuleId, StructId, TypeAliasId, TypeDefId,
 };
 use crate::namespace::{events, types};
+use fe_common::diagnostics::Diagnostic;
 use fe_parser::node::NodeId;
 use indexmap::IndexMap;
 use std::collections::BTreeMap;
@@ -76,14 +77,17 @@ pub trait AnalyzerDb {
     #[salsa::invoke(queries::contracts::contract_type)]
     fn contract_type(&self, contract: ContractId) -> Analysis<Rc<types::Contract>>;
     #[salsa::invoke(queries::contracts::contract_functions)]
-    fn contract_functions(&self, contract: ContractId) -> Rc<IndexMap<String, FunctionId>>;
+    fn contract_functions(&self, contract: ContractId) -> Rc<Vec<FunctionId>>;
     #[salsa::invoke(queries::contracts::contract_events)]
-    fn contract_events(&self, contract: ContractId) -> Rc<IndexMap<String, EventId>>;
+    fn contract_events(&self, contract: ContractId) -> Rc<Vec<EventId>>;
     #[salsa::invoke(queries::contracts::contract_fields)]
-    fn contract_fields(&self, contract: ContractId) -> Rc<IndexMap<String, Rc<types::Type>>>;
+    fn contract_fields(
+        &self,
+        contract: ContractId,
+    ) -> Analysis<Rc<IndexMap<String, Rc<types::Type>>>>;
 
-    #[salsa::invoke(queries::functions::function_type)]
-    fn function_type(&self, id: FunctionId) -> Analysis<Rc<FunctionAttributes>>;
+    #[salsa::invoke(queries::functions::function_signature)]
+    fn function_signature(&self, id: FunctionId) -> Analysis<Rc<types::FunctionSignature>>;
     #[salsa::invoke(queries::functions::function_body)]
     fn function_body(&self, id: FunctionId) -> Analysis<Rc<FunctionBody>>;
 
@@ -99,6 +103,13 @@ pub trait AnalyzerDb {
     // #[salsa::invoke(queries::contracts::contract_field_type)]
     // fn contract_field_type(&self, contract: ContractId, name: String) -> Option<(Rc<types::Type>, usize)>;
 }
+
+#[salsa::database(AnalyzerDbStorage)]
+#[derive(Default)]
+pub struct TestDb {
+    storage: salsa::Storage<TestDb>,
+}
+impl salsa::Database for TestDb {}
 
 // struct ItemLoc<N: ItemTreeNode>
 //   container: ModuleId

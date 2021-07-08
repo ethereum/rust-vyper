@@ -1,13 +1,11 @@
 #![allow(unstable_name_collisions)] // expect_none, which ain't gonna be stabilized
 
-use crate::context::{
-    AnalyzerContext, CallType, ExpressionAttributes, FunctionAttributes, FunctionBody,
-};
+use crate::context::{AnalyzerContext, CallType, ExpressionAttributes, FunctionBody};
 use crate::db::AnalyzerDb;
 use crate::errors::AlreadyDefined2;
 use crate::namespace::events::EventDef;
 use crate::namespace::items::{EventId, FunctionId, ModuleId};
-use crate::namespace::types::{Array, FixedSize, Tuple, Type};
+use crate::namespace::types::{self, Array, FixedSize, Tuple, Type};
 use fe_common::diagnostics::Diagnostic;
 use fe_common::Span;
 use fe_parser::ast;
@@ -22,7 +20,16 @@ pub type Shared<T> = Rc<RefCell<T>>;
 pub struct ItemScope<'a> {
     db: &'a dyn AnalyzerDb,
     module: ModuleId,
-    diagnostics: Vec<Diagnostic>,
+    pub diagnostics: Vec<Diagnostic>,
+}
+impl<'a> ItemScope<'a> {
+    pub fn new(db: &'a dyn AnalyzerDb, module: ModuleId) -> Self {
+        Self {
+            db,
+            module,
+            diagnostics: vec![],
+        }
+    }
 }
 
 impl<'a> AnalyzerContext for ItemScope<'a> {
@@ -68,16 +75,17 @@ impl<'a> FunctionScope<'a> {
         self.function.contract(self.db).field(self.db, name)
     }
 
-    pub fn contract_function(&self, name: &str) -> Option<Rc<FunctionAttributes>> {
+    pub fn contract_function(&self, name: &str) -> Option<Rc<types::ContractFunction>> {
         self.function
             .contract(self.db)
-            .functions(self.db)
+            .typ(self.db)
+            .functions
             .get(name)
-            .map(|id| id.typ(self.db))
+            .cloned()
     }
 
     pub fn function_return_type(&self) -> FixedSize {
-        self.function.typ(self.db).return_type.clone()
+        self.function.signature(self.db).return_type.clone()
     }
     /// Attribute contextual information to an expression node.
     ///
@@ -234,13 +242,17 @@ impl<'a, 'b> BlockScope<'a, 'b> {
     //     self.contract_scope().borrow().event_def(name)
     // }
 
+    pub fn contract_name(&self) -> String {
+        self.root.function.contract(self.root.db).name(self.root.db)
+    }
+
     /// Lookup a field definition on the inherited contract scope
     pub fn contract_field(&self, name: &str) -> Option<(Rc<Type>, usize)> {
         self.root.contract_field(name)
     }
 
     /// Lookup a function definition on the inherited contract scope.
-    pub fn contract_function(&self, name: &str) -> Option<Rc<FunctionAttributes>> {
+    pub fn contract_function(&self, name: &str) -> Option<Rc<types::ContractFunction>> {
         self.root.contract_function(name)
     }
 

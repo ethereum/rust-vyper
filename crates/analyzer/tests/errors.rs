@@ -1,25 +1,36 @@
 //! Tests for contracts that should cause compile errors
 
-use fe_analyzer::errors::AnalyzerError;
+use fe_analyzer::namespace::items;
+use fe_analyzer::{AnalyzerDb, TestDb};
 use fe_common::diagnostics::{diagnostics_string, print_diagnostics};
 use fe_common::files::FileStore;
 use insta::assert_snapshot;
+use std::rc::Rc;
 use wasm_bindgen_test::wasm_bindgen_test;
 
 fn error_string(path: &str, src: &str) -> String {
     let mut files = FileStore::new();
     let id = files.add_file(path, src);
 
-    let fe_module = match fe_parser::parse_file(src, id) {
+    let fe_module = match fe_parser::parse_file(src) {
         Ok((module, _)) => module,
         Err(diags) => {
-            print_diagnostics(&diags, &files);
+            print_diagnostics(&diags, id, &files);
             panic!("parsing failed");
         }
     };
-    let AnalyzerError(diagnostics) = fe_analyzer::analyze(&fe_module, id).unwrap_err();
 
-    diagnostics_string(&diagnostics, &files)
+    let db = TestDb::default();
+    let module = db.intern_module(Rc::new(items::Module {
+        ast: fe_module,
+        file: id,
+    }));
+    let diagnostics = module.diagnostics(&db);
+    if diagnostics.is_empty() {
+        panic!("no analyzer diagnostics")
+    }
+
+    diagnostics_string(&diagnostics, id, &files)
 }
 
 macro_rules! test_file {

@@ -89,7 +89,7 @@ pub fn type_desc(context: &mut dyn AnalyzerContext, desc: &Node<fe::TypeDesc>) -
                     }
                     None => Base::Unknown,
                 };
-                let value = match args.kind.get(0) {
+                let value = match args.kind.get(1) {
                     Some(fe::GenericArg::TypeDesc(type_node)) => type_desc(context, type_node),
                     Some(fe::GenericArg::Int(node)) => {
                         context.error(

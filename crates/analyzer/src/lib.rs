@@ -15,34 +15,13 @@ pub mod namespace;
 mod operations;
 mod traversal;
 
-use crate::db::AnalyzerDb;
+pub use crate::db::{AnalyzerDb, TestDb};
 use crate::errors::{AnalyzerError, FatalError};
 use crate::namespace::items::ModuleId;
 use fe_common::files::SourceFileId;
 
-/// Performs semantic analysis of the source program and returns a `Context`
-/// instance.
-pub fn analyze(db: &dyn AnalyzerDb, module: ModuleId) -> Result<(), AnalyzerError> {
-    todo!()
-    // let mut context = Context::new(db);
-    // let result = traversal::module::module(&mut context, module);
-
-    // match result {
-    //     Ok(()) => {
-    //         if context.diagnostics.is_empty() {
-    //             Ok(context)
-    //         } else {
-    //             Err(AnalyzerError(context.diagnostics))
-    //         }
-    //     }
-    //     Err(FatalError) => {
-    //         if context.diagnostics.is_empty() {
-    //             panic!("Expected at least one error")
-    //         }
-    //         Err(AnalyzerError(context.diagnostics))
-    //     }
-    // }
-}
+// /// Performs semantic analysis of the source program and returns a `Context`
+// /// instance.
 
 #[cfg(feature = "fix-context-harness")]
 pub mod test_utils {

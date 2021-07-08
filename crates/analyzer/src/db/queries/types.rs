@@ -1,20 +1,18 @@
 use crate::db::Analysis;
 use crate::namespace::items::TypeAliasId;
+use crate::namespace::scopes::ItemScope;
 use crate::namespace::types;
+use crate::traversal::types::type_desc;
 use crate::AnalyzerDb;
 use fe_parser::ast;
 use std::rc::Rc;
 
 pub fn type_alias_type(db: &dyn AnalyzerDb, alias: TypeAliasId) -> Analysis<Rc<types::Type>> {
-    todo!()
-    // let mut field_types = vec![];
+    let mut scope = ItemScope::new(db, alias.data(db).module);
+    let typ = type_desc(&mut scope, &alias.data(db).ast.kind.typ);
 
-    // let ast::StructDef { name, fields } = strukt.data(db);
-    // for field in fields {
-    //     let Field {
-    //         name: field_name,
-    //         typ,
-    //         ..
-    //     } = &field.kind;
-    // }
+    Analysis {
+        value: Rc::new(typ),
+        diagnostics: Rc::new(scope.diagnostics),
+    }
 }

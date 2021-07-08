@@ -1,3 +1,5 @@
+use fe_analyzer::db::TestDb;
+use fe_analyzer::items;
 use fe_common::diagnostics::Diagnostic;
 use fe_common::files::SourceFileId;
 use fe_parser::parse_file;
@@ -38,17 +40,15 @@ pub fn compile(
     let (fe_module, parser_diagnostics) = parse_file(src, file_id).map_err(CompileError)?;
     errors.extend(parser_diagnostics.into_iter());
 
-    // analyze source code
-    let analysis = match fe_analyzer::analyze(&fe_module, file_id) {
-        Ok(_) if !errors.is_empty() => return Err(CompileError(errors)),
-        Ok(analysis) => analysis,
-        Err(err) => {
-            errors.extend(err.0.into_iter());
-            return Err(CompileError(errors));
-        }
-    };
-
-    assert!(errors.is_empty());
+    let db = TestDb::default();
+    let module = db.intern_module(items::Module {
+        ast: fe_module,
+        file: file_id,
+    });
+    errors.extend(module.diagnostics(db).iter());
+    if !errors.is_empty() {
+        return Err(CompileError(errors));
+    }
 
     // build abi
     let json_abis = fe_abi::build(&analysis, &fe_module).expect("failed to generate abi");

@@ -7,7 +7,7 @@ pub use parser::{Label, ParseFailed, ParseResult, Parser};
 pub mod node;
 
 use ast::Module;
-use fe_common::{diagnostics::Diagnostic, files::SourceFileId};
+use fe_common::diagnostics::Diagnostic;
 
 /// Parse a [`Module`] from the file content string.
 ///
@@ -20,11 +20,8 @@ use fe_common::{diagnostics::Diagnostic, files::SourceFileId};
 ///
 /// A [`SourceFileId`] is required to associate any diagnostics with the
 /// underlying file.
-pub fn parse_file(
-    file_content: &str,
-    file_id: SourceFileId,
-) -> Result<(Module, Vec<Diagnostic>), Vec<Diagnostic>> {
-    let mut parser = Parser::new(file_content, file_id);
+pub fn parse_file(src: &str) -> Result<(Module, Vec<Diagnostic>), Vec<Diagnostic>> {
+    let mut parser = Parser::new(src);
     match crate::grammar::module::parse_module(&mut parser) {
         Err(_) => Err(parser.diagnostics),
         Ok(node) => Ok((node.kind, parser.diagnostics)),
@@ -40,11 +37,11 @@ where
 {
     let mut files = fe_common::files::FileStore::new();
     let id = files.add_file("parse_code_chunk test snippet", src);
-    let mut parser = Parser::new(src, id);
+    let mut parser = Parser::new(src);
     if let Ok(node) = parse_fn(&mut parser) {
         Ok(node)
     } else {
-        fe_common::diagnostics::print_diagnostics(&parser.diagnostics, &files);
+        fe_common::diagnostics::print_diagnostics(&parser.diagnostics, id, &files);
         Err(ParseFailed)
     }
 }

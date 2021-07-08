@@ -314,6 +314,17 @@ pub enum CompOperator {
     GtE,
 }
 
+impl Contract {
+    pub fn field_span(&self, name: &str) -> Option<Span> {
+        Some(
+            self.fields
+                .iter()
+                .find(|node| node.kind.name.kind == name)?
+                .span,
+        )
+    }
+}
+
 impl Spanned for ModuleStmt {
     fn span(&self) -> Span {
         match self {

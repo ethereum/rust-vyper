@@ -1,10 +1,12 @@
 use crate::errors::{AlreadyDefined, TypeError};
-use std::convert::TryFrom;
-use std::fmt;
+use crate::namespace::items::FunctionId;
 
-use crate::context::FunctionAttributes;
+use indexmap::IndexMap;
 use num_bigint::BigInt;
 use num_traits::ToPrimitive;
+use std::convert::TryFrom;
+use std::fmt;
+use std::rc::Rc;
 use strum::IntoStaticStr;
 use vec1::Vec1;
 
@@ -107,7 +109,7 @@ pub trait SafeNames {
     fn lower_snake(&self) -> String;
 }
 
-#[derive(Clone, Debug, PartialEq, Eq, Hash)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub enum Type {
     Base(Base),
     Array(Array),
@@ -118,7 +120,7 @@ pub enum Type {
     Struct(Struct),
 }
 
-#[derive(Clone, Debug, PartialEq, PartialOrd, Ord, Eq, Hash)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub enum FixedSize {
     Base(Base),
     Array(Array),
@@ -128,7 +130,7 @@ pub enum FixedSize {
     Struct(Struct),
 }
 
-#[derive(Copy, Clone, Debug, PartialEq, PartialOrd, Ord, Eq, Hash)]
+#[derive(Copy, Clone, Debug, PartialEq, PartialOrd, Ord, Eq)]
 pub enum Base {
     Numeric(Integer),
     Bool,
@@ -138,7 +140,7 @@ pub enum Base {
     Unknown,
 }
 
-#[derive(Copy, Clone, Debug, Hash, PartialEq, PartialOrd, Ord, Eq, IntoStaticStr)]
+#[derive(Copy, Clone, Debug, PartialEq, PartialOrd, Ord, Eq, IntoStaticStr)]
 pub enum Integer {
     U256,
     U128,
@@ -156,38 +158,50 @@ pub enum Integer {
 
 pub const U256: Base = Base::Numeric(Integer::U256);
 
-#[derive(Clone, Debug, PartialEq, PartialOrd, Ord, Eq, Hash)]
+#[derive(Clone, Debug, PartialEq, PartialOrd, Ord, Eq)]
 pub struct Array {
     pub size: usize,
     pub inner: Base,
 }
 
-#[derive(Clone, Debug, PartialEq, Eq, Hash)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Map {
     pub key: Base,
     pub value: Box<Type>,
 }
 
-#[derive(Clone, Debug, PartialEq, PartialOrd, Ord, Eq, Hash)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Tuple {
     pub items: Vec1<FixedSize>,
 }
 
-#[derive(Clone, Debug, PartialEq, PartialOrd, Ord, Eq, Hash)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Struct {
     pub name: String,
     pub fields: Vec<(String, FixedSize)>,
 }
 
-#[derive(Clone, Debug, PartialEq, PartialOrd, Ord, Eq, Hash)]
+#[derive(Clone, Debug, PartialEq, PartialOrd, Ord, Eq)]
 pub struct FeString {
     pub max_size: usize,
 }
 
-#[derive(Clone, Debug, PartialEq, PartialOrd, Ord, Eq, Hash)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Contract {
     pub name: String,
-    pub functions: Vec<FunctionAttributes>,
+    pub functions: IndexMap<String, Rc<ContractFunction>>,
+}
+
+impl Map {
+    fn is_mysterious(&self) -> bool {
+        self.key == Base::Unknown || self.value.is_mysterious()
+    }
+}
+
+impl Tuple {
+    fn is_mysterious(&self) -> bool {
+        self.items.iter().any(|typ| typ.is_mysterious())
+    }
 }
 
 impl Struct {
@@ -230,6 +244,10 @@ impl Struct {
     pub fn get_field_index(&self, name: &str) -> Option<usize> {
         self.fields.iter().position(|(field, _)| field == name)
     }
+
+    fn is_mysterious(&self) -> bool {
+        self.fields.iter().any(|(_, typ)| typ.is_mysterious())
+    }
 }
 
 impl Integer {
@@ -271,6 +289,34 @@ impl Integer {
     }
 }
 
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct ContractFunction {
+    pub is_public: bool,
+    // XXX id is only used to get the span. we just get it via the contract's ast.
+    pub id: FunctionId,
+    pub signature: Rc<FunctionSignature>,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct FunctionSignature {
+    pub params: Vec<(String, FixedSize)>,
+    pub return_type: FixedSize,
+}
+
+impl FunctionSignature {
+    pub fn param_types(&self) -> Vec<FixedSize> {
+        self.params.iter().map(|(_, typ)| typ.to_owned()).collect()
+    }
+
+    // XXX: is this used?
+    pub fn param_names(&self) -> Vec<String> {
+        self.params
+            .iter()
+            .map(|(name, _)| name.to_owned())
+            .collect()
+    }
+}
+
 impl Type {
     pub fn is_signed_integer(&self) -> bool {
         if let Type::Base(Base::Numeric(integer)) = &self {
@@ -283,12 +329,25 @@ impl Type {
         Type::Base(Base::Unit)
     }
 
+    pub fn unknown() -> Self {
+        Type::Base(Base::Unknown)
+    }
+
     pub fn int(int_type: Integer) -> Self {
         Type::Base(Base::Numeric(int_type))
     }
 
-    pub fn unknown() -> Self {
-        Type::Base(Base::Unknown)
+    // XXX blah
+    pub fn is_mysterious(&self) -> bool {
+        match self {
+            Type::Array(array) => array.inner == Base::Unknown,
+            Type::Base(base) => *base == Base::Unknown,
+            Type::Tuple(tuple) => tuple.is_mysterious(),
+            Type::String(string) => false,
+            Type::Contract(contract) => false,
+            Type::Struct(strct) => strct.is_mysterious(),
+            Type::Map(map) => map.is_mysterious(),
+        }
     }
 }
 
@@ -374,6 +433,17 @@ impl FixedSize {
     /// Returns true if the type is `()`.
     pub fn is_unit(&self) -> bool {
         self == &Self::Base(Base::Unit)
+    }
+
+    pub fn is_mysterious(&self) -> bool {
+        match self {
+            FixedSize::Array(array) => array.inner == Base::Unknown,
+            FixedSize::Base(base) => *base == Base::Unknown,
+            FixedSize::Tuple(tuple) => tuple.is_mysterious(),
+            FixedSize::String(string) => false,
+            FixedSize::Contract(contract) => false,
+            FixedSize::Struct(strct) => strct.is_mysterious(),
+        }
     }
 
     /// Creates an instance of bool.

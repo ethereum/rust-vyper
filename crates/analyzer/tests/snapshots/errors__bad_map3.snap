@@ -11,4 +11,10 @@ error: `Map` expects 2 arguments, but 0 were provided
   │      │   
   │      expects 2 arguments
 
+error: invalid variable type
+  ┌─ [snippet]:3:6
+  │
+3 │   x: Map<>
+  │      ^^^^^ `Map` type can only be used as a contract field
+
 

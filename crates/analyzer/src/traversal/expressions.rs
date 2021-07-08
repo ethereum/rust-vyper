@@ -178,7 +178,7 @@ pub fn assignable_expr(
         }
         Map(_) => {
             scope.error(
-                "Maps cannot reside in memory".into(),
+                "`Map` type cannot reside in memory".into(),
                 exp.span,
                 "this type can only be used in a contract field".into(),
             );
@@ -664,7 +664,7 @@ fn expr_unary_operation(
                 ))
             }
             UnaryOperator::Invert => {
-                scope.not_yet_implemented(&"unary invert", exp.span);
+                scope.not_yet_implemented("unary invert", exp.span);
                 Ok(ExpressionAttributes::new(Type::unit(), Location::Value))
             }
         };
@@ -979,15 +979,16 @@ fn expr_call_self_attribute(
     args: &Node<Vec<Node<fe::CallArg>>>,
 ) -> Result<ExpressionAttributes, FatalError> {
     if let Some(func) = scope.contract_function(func_name) {
-        validate_arg_count(scope, func_name, name_span, args, func.params.len());
-        validate_arg_types(scope, func_name, args, &func.params)?;
+        let sig = &func.signature;
+        validate_arg_count(scope, func_name, name_span, args, sig.params.len());
+        validate_arg_types(scope, func_name, args, &sig.params)?;
 
-        let return_location = match &func.return_type {
+        let return_location = match &sig.return_type {
             FixedSize::Base(_) => Location::Value,
             _ => Location::Memory,
         };
         Ok(ExpressionAttributes::new(
-            func.return_type.clone().into(),
+            sig.return_type.clone().into(),
             return_location,
         ))
     } else {
@@ -1178,7 +1179,7 @@ fn expr_call_type_attribute(
     args: &Node<Vec<Node<fe::CallArg>>>,
 ) -> Result<ExpressionAttributes, FatalError> {
     let arg_attributes = expr_call_args(scope, args)?;
-    let contract_name = ""; // XXX scope.borrow().contract_scope().borrow().name.clone();
+    let contract_name = scope.contract_name();
 
     let report_circular_dependency = |scope: &mut BlockScope, method: String| {
         scope.fancy_error(
@@ -1248,15 +1249,12 @@ fn expr_call_contract_attribute(
     name_span: Span,
     args: &Node<Vec<Node<fe::CallArg>>>,
 ) -> Result<ExpressionAttributes, FatalError> {
-    if let Some(function) = contract
-        .functions
-        .iter()
-        .find(|function| function.name == func_name)
-    {
-        let return_type = function.return_type.to_owned();
+    if let Some(function) = contract.functions.get(func_name) {
+        let sig = &function.signature;
+        let return_type = sig.return_type.to_owned();
 
-        validate_arg_count(scope, func_name, name_span, args, function.params.len());
-        validate_arg_types(scope, func_name, args, &function.params)?;
+        validate_arg_count(scope, func_name, name_span, args, sig.params.len());
+        validate_arg_types(scope, func_name, args, &sig.params)?;
 
         Ok(ExpressionAttributes::new(
             return_type.clone().into(),

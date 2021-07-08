@@ -3,12 +3,12 @@ source: crates/analyzer/tests/errors.rs
 expression: "error_string(&path, &src)"
 
 ---
-error: a variable with the same name already exists in this scope
-  ┌─ compile_errors/duplicate_var_in_contract_method.fe:4:9
+error: duplicate variable definition
+  ┌─ compile_errors/duplicate_var_in_contract_method.fe:3:9
   │
+3 │         foo: u8
+  │         ^^^ `foo` first defined here
 4 │         foo: u8
-  │         ^^^ Conflicting definition of `foo` variables
-  │
-  = Note: Give one of the `foo` variables a different name
+  │         --- `foo` redefined here
 
 

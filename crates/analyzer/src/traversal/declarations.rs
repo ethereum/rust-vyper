@@ -1,7 +1,7 @@
 use crate::context::AnalyzerContext;
 use crate::errors::{AlreadyDefined2, FatalError};
 use crate::namespace::scopes::BlockScope;
-use crate::namespace::types::FixedSize;
+use crate::namespace::types::{Base, FixedSize};
 use crate::traversal::{expressions, types};
 use fe_common::diagnostics::Label;
 use fe_parser::ast as fe;
@@ -13,14 +13,16 @@ use std::rc::Rc;
 pub fn var_decl(scope: &mut BlockScope, stmt: &Node<fe::FuncStmt>) -> Result<(), FatalError> {
     if let fe::FuncStmt::VarDecl { target, typ, value } = &stmt.kind {
         let declared_type = match FixedSize::try_from(types::type_desc(scope, &typ)) {
+            Ok(typ) if typ.is_mysterious() => return Err(FatalError),
             Ok(typ) => typ,
             Err(_) => {
+                // If this conversion fails, the type must be a map (for now at least)
                 scope.error(
                     "invalid variable type".into(),
                     typ.span,
-                    "can't be stored in a variable".into(),
+                    "`Map` type can only be used as a contract field".into(),
                 );
-                FixedSize::unknown()
+                return Err(FatalError);
             }
         };
 
@@ -39,7 +41,6 @@ pub fn var_decl(scope: &mut BlockScope, stmt: &Node<fe::FuncStmt>) -> Result<(),
         }
 
         add_var(scope, &target, declared_type.clone())?;
-        // XXX scope.add_declaration(stmt, declared_type);
         return Ok(());
     }
 
@@ -59,8 +60,8 @@ fn add_var(
                     "duplicate variable definition",
                     // TODO: figure out how to include the previously defined var
                     vec![
-                        Label::primary(target.span, "this variable has already been defined"),
-                        Label::secondary(prev_span, "previous definition is here"),
+                        Label::primary(prev_span, &format!("`{}` first defined here", name)),
+                        Label::secondary(target.span, &format!("`{}` redefined here", name)),
                     ],
                     vec![],
                 )

@@ -3,12 +3,12 @@ source: crates/analyzer/tests/errors.rs
 expression: "error_string(&path, &src)"
 
 ---
-error: a function argument with the same name already exists
-  ┌─ compile_errors/duplicate_arg_in_contract_method.fe:2:26
+error: duplicate parameter names in function `bar`
+  ┌─ compile_errors/duplicate_arg_in_contract_method.fe:2:17
   │
 2 │     pub def bar(foo: u8, foo:u8):
-  │                          ^^^^^^ Conflicting definition of function argument `foo`
-  │
-  = Note: Give one of the `foo` function arguments a different name
+  │                 ^^^^^^^  ------ second use of the name `foo`
+  │                 │         
+  │                 first use of the name `foo`
 
 

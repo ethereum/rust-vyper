@@ -3,13 +3,26 @@ source: crates/analyzer/tests/errors.rs
 expression: "error_string(&path, &src)"
 
 ---
-error: a function with the same name already exists
-  ┌─ compile_errors/issue_451.fe:4:5
-  │  
-4 │ ╭     pub def bar:
-5 │ │      s
-  │ ╰──────^ Conflicting definition of function `bar`
-  │  
-  = Note: Give one of the `bar` functions a different name
+error: duplicate function names in `contract o`
+  ┌─ compile_errors/issue_451.fe:2:5
+  │    
+2 │ ╭       pub def bar(x:u256,y:u256)->bool
+3 │ │        return
+  │ ╰─────────────^ `bar` first defined here
+4 │   ╭     pub def bar:
+5 │   │      s
+  │   ╰──────' `bar` redefined here
+
+error: expected function to return `bool` but was `()`
+  ┌─ compile_errors/issue_451.fe:3:6
+  │
+3 │      return
+  │      ^^^^^^
+
+error: cannot find value `s` in this scope
+  ┌─ compile_errors/issue_451.fe:5:6
+  │
+5 │      s
+  │      ^ undefined
 
 

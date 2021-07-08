@@ -3,13 +3,15 @@ source: crates/analyzer/tests/errors.rs
 expression: "error_string(&path, &src)"
 
 ---
-error: a function with the same name already exists
-  ┌─ compile_errors/duplicate_method_in_contract.fe:6:5
-  │  
-6 │ ╭     pub def bar():
-7 │ │         pass
-  │ ╰────────────^ Conflicting definition of function `bar`
-  │  
-  = Note: Give one of the `bar` functions a different name
+error: duplicate function names in `contract Foo`
+  ┌─ compile_errors/duplicate_method_in_contract.fe:3:5
+  │    
+3 │ ╭       pub def bar():
+4 │ │           pass
+  │ ╰──────────────^ `bar` first defined here
+5 │     
+6 │   ╭     pub def bar():
+7 │   │         pass
+  │   ╰────────────' `bar` redefined here
 
 

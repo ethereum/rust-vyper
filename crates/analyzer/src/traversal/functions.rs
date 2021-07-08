@@ -1,4 +1,4 @@
-use crate::context::{AnalyzerContext, ExpressionAttributes, FunctionAttributes, Label, Location};
+use crate::context::{AnalyzerContext, ExpressionAttributes, Label, Location};
 use crate::errors::{AlreadyDefined2, FatalError};
 use crate::namespace::scopes::{BlockScope, BlockScopeType};
 use crate::namespace::types::{Base, FixedSize, Type};
@@ -152,7 +152,7 @@ fn expr(scope: &mut BlockScope, stmt: &Node<fe::FuncStmt>) -> Result<(), FatalEr
 
 fn emit(scope: &mut BlockScope, stmt: &Node<fe::FuncStmt>) -> Result<(), FatalError> {
     if let fe::FuncStmt::Emit { name, args } = &stmt.kind {
-        // XXX
+        todo!();
         // if let Some(event) = scope.borrow().contract_event_def(&name.kind) {
         //     scope.add_emit(stmt, event.clone());
         //     expressions::validate_named_args(scope, &name.kind, name.span, args, &event.fields)?;
@@ -163,8 +163,7 @@ fn emit(scope: &mut BlockScope, stmt: &Node<fe::FuncStmt>) -> Result<(), FatalEr
         //         "undefined event",
         //     );
         // }
-
-        return Ok(());
+        // return Ok(());
     }
 
     unreachable!()

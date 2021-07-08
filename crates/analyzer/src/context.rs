@@ -3,6 +3,7 @@ use crate::db::AnalyzerDb;
 use crate::errors::{self, CannotMove};
 use crate::namespace::events::EventDef;
 use crate::namespace::items::EventId;
+use crate::namespace::items::FunctionId;
 use crate::namespace::types::{Array, Contract, FixedSize, Struct, Tuple, Type};
 pub use fe_common::diagnostics::Label;
 use fe_common::diagnostics::{Diagnostic, Severity};
@@ -18,10 +19,9 @@ use std::rc::Rc;
 #[derive(Debug, PartialEq, Eq, Hash, Clone)]
 pub struct Analysis<T> {
     pub value: T,
-    pub diagnostics: Vec<Diagnostic>,
+    pub diagnostics: Rc<Vec<Diagnostic>>,
 }
 
-// TODO: rename to Context when the Context struct is gone
 pub trait AnalyzerContext {
     fn resolve_type(&self, name: &str) -> Option<Rc<Type>>;
     fn add_diagnostic(&mut self, diag: Diagnostic);
@@ -44,11 +44,11 @@ pub trait AnalyzerContext {
         )
     }
 
-    fn not_yet_implemented(&mut self, feature: &dyn Display, span: Span) {
+    fn not_yet_implemented(&mut self, feature: &str, span: Span) {
         self.error(
-            "feature not yet implemented".into(),
+            &format!("feature not yet implemented: {}", feature),
             span,
-            &format!("{} is not yet implemented", feature),
+            "not yet implemented".into(),
         )
     }
 
@@ -89,7 +89,7 @@ impl Location {
     }
 }
 
-#[derive(Default, Clone, Debug, PartialEq, Eq, Hash)]
+#[derive(Default, Clone, Debug, PartialEq, Eq)]
 pub struct FunctionBody {
     pub expressions: BTreeMap<NodeId, ExpressionAttributes>,
     pub emits: BTreeMap<NodeId, EventId>,
@@ -99,7 +99,7 @@ pub struct FunctionBody {
 }
 
 /// Contains contextual information relating to an expression AST node.
-#[derive(Clone, Debug, PartialEq, Eq, Hash)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct ExpressionAttributes {
     pub typ: Type,
     pub location: Location,
@@ -146,34 +146,11 @@ impl ExpressionAttributes {
 }
 
 /// The type of a function call.
-#[derive(Clone, Debug, PartialEq, Eq, Hash)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub enum CallType {
     BuiltinFunction { func: GlobalMethod },
     TypeConstructor { typ: Type },
     SelfAttribute { func_name: String },
     ValueAttribute,
     TypeAttribute { typ: Type, func_name: String },
-}
-
-// XXX: rename to FunctionType to differentiate between this and the analysis of the fn body
-/// Contains contextual information relating to a function definition AST node.
-#[derive(Clone, Debug, PartialEq, PartialOrd, Ord, Eq, Hash)]
-pub struct FunctionAttributes {
-    pub is_public: bool,
-    pub name: String,
-    pub params: Vec<(String, FixedSize)>,
-    pub return_type: FixedSize,
-}
-
-impl FunctionAttributes {
-    pub fn param_types(&self) -> Vec<FixedSize> {
-        self.params.iter().map(|(_, typ)| typ.to_owned()).collect()
-    }
-
-    pub fn param_names(&self) -> Vec<String> {
-        self.params
-            .iter()
-            .map(|(name, _)| name.to_owned())
-            .collect()
-    }
 }
