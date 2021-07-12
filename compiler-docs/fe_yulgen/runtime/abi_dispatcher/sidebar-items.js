@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["dispatcher","Builds a switch statement that dispatches calls to the contract."]]});

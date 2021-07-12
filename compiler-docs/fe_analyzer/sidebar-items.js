@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["analyze","Performs semantic analysis of the source program and returns a `Context` instance."]],"mod":[["builtins",""],["constants",""],["context",""],["errors","Semantic errors."],["namespace",""]]});

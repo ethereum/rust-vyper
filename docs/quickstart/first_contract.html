@@ -1,0 +1,290 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Write your first contract - The Fe Guide</title>
+        <!-- Custom HTML head -->
+        
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../index.html">Introduction</a></li><li class="chapter-item expanded "><a href="../quickstart/index.html"><strong aria-hidden="true">1.</strong> Quickstart</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../quickstart/installation.html"><strong aria-hidden="true">1.1.</strong> Installation</a></li><li class="chapter-item expanded "><a href="../quickstart/first_contract.html" class="active"><strong aria-hidden="true">1.2.</strong> Write your first contract</a></li><li class="chapter-item expanded "><a href="../quickstart/deploy_contract.html"><strong aria-hidden="true">1.3.</strong> Deploying a contract to a testnet</a></li></ol></li><li class="chapter-item expanded "><a href="../development/index.html"><strong aria-hidden="true">2.</strong> Development</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../development/build.html"><strong aria-hidden="true">2.1.</strong> Build &amp; Test</a></li><li class="chapter-item expanded "><a href="../development/release.html"><strong aria-hidden="true">2.2.</strong> Release</a></li></ol></li><li class="chapter-item expanded "><a href="../spec/index.html"><strong aria-hidden="true">3.</strong> Specification (WIP)</a></li><li class="chapter-item expanded "><a href="../release_notes.html"><strong aria-hidden="true">4.</strong> Release Notes</a></li><li class="chapter-item expanded "><a href="../code_of_conduct.html"><strong aria-hidden="true">5.</strong> Code of Conduct</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">The Fe Guide</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h2 id="write-your-first-fe-contract"><a class="header" href="#write-your-first-fe-contract">Write your first Fe contract</a></h2>
+<p>Now that we have the compiler installed let's write our first contract. A contract contains the code that will be deployed to the Ethereum blockchain and resides at a specific address. </p>
+<p>The code of the contract dictates how:</p>
+<ul>
+<li>it manipulates its own state</li>
+<li>interacts with other contracts</li>
+<li>exposes external APIs to be called from other contracts or users</li>
+</ul>
+<p>To keep things simple we will just write a basic <em>guestbook</em> where people can leave a message associated with their Ethereum address.</p>
+<blockquote>
+<p>Note: Real code would not instrument the Ethereum blockchain in such a way as it is a waste of precious resources. This code is for demo purposes only.</p>
+</blockquote>
+<h3 id="create-a-guest_bookfe-file"><a class="header" href="#create-a-guest_bookfe-file">Create a <code>guest_book.fe</code> file</a></h3>
+<p>Fe code is written in files ending on the <code>.fe</code> file extension. Let's create a file <code>guest_book.fe</code> and put in the following content.</p>
+<p>python</p>
+<pre><code class="language-python">contract GuestBook:
+</code></pre>
+<p>Now, execute <code>./fe guest_book.fe</code> to compile the file.</p>
+<p>Oops, the compiler is telling us that it didn't expect our code to end here.</p>
+<pre><code>Unable to compile guest_book.fe.
+error: unexpected end of file
+  ┌─ guest_book.fe:1:20
+  │
+1 │ contract GuestBook:
+  │                    ^
+
+</code></pre>
+<p>Fe follows Pythonic block indentation rules and the compiler expects us to provide a block of indented code after <code>GuestBook:</code>.</p>
+<p>Let's expand the code by providing a <a href="/docs/spec/index.html#51111-hashmap-types"><code>map</code></a> where we can associate messages with Ethereum addresses. The messages will simply be a <a href="/docs/spec/index.html#51113-string-types"><code>string</code></a> of a maximum length of <code>100</code> written as <code>string100</code>.
+The addresses are represented by the builtin <a href="/docs/spec/index.html#51110-address-type"><code>address</code></a> type.</p>
+<pre><code>contract GuestBook:
+  messages: Map&lt;address, String&lt;100&gt;&gt;
+</code></pre>
+<p>Execute <code>./fe guest_book.fe</code> again to recompile the file.</p>
+<p>This time, the compiler tells us that it compiled our contract and that it has put the artifacts into a subdirectory called <code>output</code>.</p>
+<pre><code>Compiled guest_book.fe. Outputs in `output`
+</code></pre>
+<p>If we examine the <code>output</code> directory we'll find a subdirectory <code>GuestBook</code> with a <code>GuestBook_abi.json</code> and a <code>GuestBook.bin</code> file.</p>
+<pre><code>├── fe
+├── guest_book.fe
+└── output
+    └── GuestBook
+        ├── GuestBook_abi.json
+        └── GuestBook.bin
+</code></pre>
+<p>The <code>GuestBook_abi.json</code> is a JSON representation that describes the binary interface of our contract but since our contract doesn't yet expose anything useful its content for now resembles an empty array.</p>
+<p>The <code>GuestBook.bin</code> is slightly more interesting containing what looks like a gibberish of characters which in fact is the compiled binary contract code written in <a href="https://en.wikipedia.org/wiki/Hexadecimal">hexadecimal</a> characters.</p>
+<p>We don't need to do anything further yet with these files that the compiler produces but they will become important when we get to the point where we want to deploy our code to the Ethereum blockchain.</p>
+<h3 id="add-a-method-to-sign-the-guest-book"><a class="header" href="#add-a-method-to-sign-the-guest-book">Add a method to sign the guest book</a></h3>
+<p>Let's focus on the functionality of our world changing application and add a method to sign the guestbook.</p>
+<pre><code class="language-python">contract GuestBook:
+  messages: Map&lt;address, String&lt;100&gt;&gt;
+
+  pub def sign(book_msg: string100):
+      self.messages[msg.sender] = book_msg
+</code></pre>
+<p>The code should look familar to those of us that have written Python before except that in Fe every method that is defined without the <a href="/docs/spec/index.html#311-visibility-and-privacy"><code>pub</code></a> keyword becomes private. Since we want people to interact with our contract and call the <code>sign</code> method we have to prefix it with <code>pub</code>.</p>
+<p>Let's recompile the contract again and see what happens.</p>
+<pre><code>Failed to write output to directory: `output`. Error: Directory 'output' is not empty. Use --overwrite to overwrite.
+</code></pre>
+<p>Oops, the compiler is telling us that the <code>output</code> directory is a non-empty directory and plays it safe by asking us if we are sure that we want to overwrite it. We have to use the <code>--overwrite</code> flag to allow the compiler to overwrite it is that is stored in the <code>output</code> directory.</p>
+<p>Let's try it again with <code>./fe guest_book.fe --overwrite</code>.</p>
+<p>This time it worked and we can also see that the <code>GuestBook_abi.json</code> has become slightly more interesting.</p>
+<pre><code class="language-json">[
+  {
+    &quot;name&quot;: &quot;sign&quot;,
+    &quot;type&quot;: &quot;function&quot;,
+    &quot;inputs&quot;: [
+      {
+        &quot;name&quot;: &quot;book_msg&quot;,
+        &quot;type&quot;: &quot;bytes100&quot;
+      }
+    ],
+    &quot;outputs&quot;: []
+  }
+]
+</code></pre>
+<p>Since our contract now has a public <code>sign</code> method the corresponding ABI has changed accordingly.</p>
+<h3 id="add-a-method-to-read-a-message"><a class="header" href="#add-a-method-to-read-a-message">Add a method to read a message</a></h3>
+<p>To make the guest book more useful we will also add a method <code>get_msg</code> to read entries from a given address.</p>
+<pre><code class="language-python">contract GuestBook:
+  messages: Map&lt;address, String&lt;100&gt;&gt;
+
+  pub def sign(book_msg: string100):
+      self.messages[msg.sender] = book_msg
+
+  pub def get_msg(addr: address) -&gt; string100:
+      return self.messages[addr]
+</code></pre>
+<p>However, we will hit another error as we try to recompile the current code.</p>
+<pre><code>Unable to compile guest_book.fe.
+Analyzer error: CannotMove on line 8
+pub def get_msg(addr: address) -&gt; string100:
+      return self.messages[addr]
+</code></pre>
+<p>When we try to return a reference type such as an array from the storage of the contract we have to explicitly copy it to memory using the <a href="/docs/spec/index.html#623-the-to_mem-function"><code>to_mem()</code></a> function.</p>
+<blockquote>
+<p>Note: In the future Fe will likely introduce immutable storage pointers which might affect these semantics.</p>
+</blockquote>
+<p>The code should compile fine when we change it accordingly.</p>
+<pre><code class="language-python">contract GuestBook:
+  messages: Map&lt;address, String&lt;100&gt;&gt;
+
+  pub def sign(book_msg: string100):
+      self.messages[msg.sender] = book_msg
+
+  pub def get_msg(addr: address) -&gt; string100:
+      return self.messages[addr].to_mem()
+</code></pre>
+<p>Congratulations! You finished your first little Fe project. 👏
+In the next chapter we will learn how to deploy our code and tweak it a bit further.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../quickstart/installation.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="../quickstart/deploy_contract.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../quickstart/installation.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="../quickstart/deploy_contract.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+    </body>
+</html>

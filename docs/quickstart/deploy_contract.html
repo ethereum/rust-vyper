@@ -1,0 +1,250 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Deploying a contract to a testnet - The Fe Guide</title>
+        <!-- Custom HTML head -->
+        
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../index.html">Introduction</a></li><li class="chapter-item expanded "><a href="../quickstart/index.html"><strong aria-hidden="true">1.</strong> Quickstart</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../quickstart/installation.html"><strong aria-hidden="true">1.1.</strong> Installation</a></li><li class="chapter-item expanded "><a href="../quickstart/first_contract.html"><strong aria-hidden="true">1.2.</strong> Write your first contract</a></li><li class="chapter-item expanded "><a href="../quickstart/deploy_contract.html" class="active"><strong aria-hidden="true">1.3.</strong> Deploying a contract to a testnet</a></li></ol></li><li class="chapter-item expanded "><a href="../development/index.html"><strong aria-hidden="true">2.</strong> Development</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../development/build.html"><strong aria-hidden="true">2.1.</strong> Build &amp; Test</a></li><li class="chapter-item expanded "><a href="../development/release.html"><strong aria-hidden="true">2.2.</strong> Release</a></li></ol></li><li class="chapter-item expanded "><a href="../spec/index.html"><strong aria-hidden="true">3.</strong> Specification (WIP)</a></li><li class="chapter-item expanded "><a href="../release_notes.html"><strong aria-hidden="true">4.</strong> Release Notes</a></li><li class="chapter-item expanded "><a href="../code_of_conduct.html"><strong aria-hidden="true">5.</strong> Code of Conduct</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">The Fe Guide</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h2 id="deploy-your-contract"><a class="header" href="#deploy-your-contract">Deploy your contract.</a></h2>
+<p>Since we have written our first contract now, how about we bring it to live and use it on an actual chain?</p>
+<p>Deploying such a demo contract to the Ethereum mainnet would be a waste of money but fortunately we have a few other options to choose from. For instance, we can use our very own local blockchain instance which is great for local development. Alternatively we can use a test network that provides developers shared infrastructure to deploy code without spending actual money on it.</p>
+<p>In this guide we will learn how to deploy and interact with our guest book on the popular <a href="https://goerli.net/">Görli testnet</a>.</p>
+<h3 id="setting-the-stage-with-dapptools"><a class="header" href="#setting-the-stage-with-dapptools">Setting the stage with dapp.tools</a></h3>
+<p>The Ethereum ecosystem provides a rich set of tools to assist smart contract developers in various ways when it comes to developing, testing, deploying and upgrading smart contracts. Fe is still a very young language and there are no tools yet that are tailored for the language. Having said that, most tooling should be flexible enough to work with Fe in some way that might feel slightly less integrated. For this guide we choose to use DappTools which is a very lightweight set of command line tools for managing smart contract development.</p>
+<p>To follow this guide, you will first need to head over to <a href="https://dapp.tools">dapp.tools</a> and follow the installation steps.</p>
+<blockquote>
+<p>Note: If you are a seasoned smart contract developer who uses different tools, feel free to follow the tutorial using your own toolchain.</p>
+</blockquote>
+<h3 id="setting-up-a-görli-user-account"><a class="header" href="#setting-up-a-görli-user-account">Setting up a Görli user account</a></h3>
+<p>To deploy our contract to the Görli testnet we will need to have an Ethereum account that has some GöETH. GöETH has no real value but it is still a resource that is needed as a basic line of defense against spamming the testnet. If you don't have any GöETH yet, you can request some from this <a href="https://goerli-faucet.slock.it/">faucet</a></p>
+<p>The next thing we need is to create a keystore file for our account so that dapp tools can sign messages via <a href="https://github.com/dapphub/dapptools/tree/master/src/ethsign"><code>ethsign</code></a>.</p>
+<blockquote>
+<p><strong>IMPORTANT</strong>: It is good practice to <strong>never</strong> use an Ethereum account for a testnet that is also used for the actual Ethereum mainnet.</p>
+</blockquote>
+<p>To create the keystore file for your testnet account, you can use <code>ethsign</code> to import your private key. Run the following command and follow the instructions.</p>
+<pre><code>ethsign import --keystore ~/.ethereum/keystore/
+</code></pre>
+<h3 id="making-the-deployment-transaction"><a class="header" href="#making-the-deployment-transaction">Making the deployment transaction</a></h3>
+<p>Let's recall that we finished our guest book in the previous chapter with the following code.</p>
+<pre><code class="language-python">contract GuestBook:
+  messages: Map&lt;address, String&lt;100&gt;&gt;
+
+  pub def sign(book_msg: String&lt;100&gt;):
+      self.messages[msg.sender] = book_msg
+
+  pub def get_msg(addr: address) -&gt; String&lt;100&gt;:
+      return self.messages[addr].to_mem()
+</code></pre>
+<p>If you haven't already, run <code>./fe guest_book.fe --overwrite</code> to obtain the bytecode that we want to deploy.</p>
+<p>To make the deployment, we will need to send a transaction to a node that participates in the Görli network. We can run our own node, sign up at Infura to use one of their nodes or find an open public node such as <code>https://goerli-light.eth.linkpool.io</code> which we will use to keep this tutorial as accessible as possible.</p>
+<p>Use the following command to deploy the contract. Please note that <code>&lt;rpc-url&gt;</code> needs to be replaced with the URL of the node that we connect to and <code>&lt;our-eth-address&gt;</code> needs to be replaced with the Ethereum address that we imported in the previous step.</p>
+<pre><code>$ ETH_RPC_URL=&lt;rpc-url&gt; ETH_FROM=&lt;our-eth-address&gt; seth send --create output/GuestBook/GuestBook.bin
+</code></pre>
+<p>What follows is the actual command and the response that was used when writing the tutorial.</p>
+<pre><code>$ ETH_RPC_URL=https://goerli-light.eth.linkpool.io ETH_FROM=0x4E14AaF86CF0759d6Ec8C7433acd66F07D093293 seth send --create output/GuestBook/GuestBook.bin
+seth-send: warning: `ETH_GAS' not set; using default gas amount
+Ethereum account passphrase (not echoed): seth-send: Published transaction with 681 bytes of calldata.
+seth-send: 0x241ac045170d0612b67b2319fa08ed8be8b79568e00090c4f84146897b83760b
+seth-send: Waiting for transaction receipt...............................
+seth-send: Transaction included in block 4858224.
+0xcecd2be6d4d01ed7906f502be6321c3721f38bc6
+</code></pre>
+<p>As we can see in the output, our transaction <a href="https://goerli.etherscan.io/tx/0x241ac045170d0612b67b2319fa08ed8be8b79568e00090c4f84146897b83760b"><code>0x241ac045170d0612b67b2319fa08ed8be8b79568e00090c4f84146897b83760b</code></a> to deploy the contract is now included in the Görli blockchain. At the very end of the response we find <a href="https://goerli.etherscan.io/address/0xcecd2be6d4d01ed7906f502be6321c3721f38bc6"><code>0xcecd2be6d4d01ed7906f502be6321c3721f38bc6</code></a> which is the address where our contract is now deployed.</p>
+<h3 id="signing-the-guest-book"><a class="header" href="#signing-the-guest-book">Signing the guest book</a></h3>
+<p>Now that the guest book is live on the Görli network, everyone can send a transaction to sign it. We will sign it from the same address that was used to deploy the contract but there is nothing preventing anyone to sign it from any other address.</p>
+<p>The following command will send a transaction to call <code>sign(string)</code> with the message <em>&quot;We &lt;3 Fe&quot;</em>.</p>
+<pre><code>ETH_RPC_URL=&lt;rpc-url&gt; ETH_FROM=&lt;our-eth-address&gt; seth send &lt;contract-address&gt; &quot;sign(string)&quot; '&quot;We &lt;3 Fe&quot;'
+</code></pre>
+<p>What follows is again the actual command and the response that was used when writing the tutorial.</p>
+<pre><code>$ ETH_RPC_URL=https://goerli-light.eth.linkpool.io ETH_FROM=0x4E14AaF86CF0759d6Ec8C7433acd66F07D093293 seth send 0xcecd2be6d4d01ed7906f502be6321c3721f38bc6 &quot;sign(string)&quot; '&quot;We &lt;3 Fe&quot;'
+seth-send: warning: `ETH_GAS' not set; using default gas amount
+Ethereum account passphrase (not echoed): seth-send: Published transaction with 100 bytes of calldata.
+seth-send: 0xf61c042064a501939769b802d1455124b0f8665eb1b070c75c2815ca52bd8706
+seth-send: Waiting for transaction receipt.............
+seth-send: Transaction included in block 4858368.
+</code></pre>
+<p>Just as before, the response tells us the transaction hash <a href="https://goerli.etherscan.io/tx/0xf61c042064a501939769b802d1455124b0f8665eb1b070c75c2815ca52bd8706"><code>0xf61c042064a501939769b802d1455124b0f8665eb1b070c75c2815ca52bd8706</code></a> which we can inspect on Etherscan.</p>
+<h3 id="reading-the-signatures"><a class="header" href="#reading-the-signatures">Reading the signatures</a></h3>
+<p>The <code>get_msg(address)</code> API let's us read any signature for any address but it will give us an response of 100 zero bytes for any address that simply hasn't signed the guestbook.</p>
+<p>Since reading the messages doesn't change any state within the blochchain, we don't have to send and actual transaction. Instead we just perform a <em>call</em> against the local state of the node that we are querying.</p>
+<p>To do that run:</p>
+<pre><code>$ ETH_RPC_URL=&lt;rpc-url&gt; seth call &lt;contract-address&gt; &quot;get_msg(address)&quot; &lt;address-to-check&gt; | seth --to-ascii
+</code></pre>
+<p>Notice that the command doesn't need to provide <code>ETH_FROM</code> simply because we are not sending an actual transaction.</p>
+<pre><code>$ ETH_RPC_URL=https://goerli-light.eth.linkpool.io seth call 0xcecd2be6d4d01ed7906f502be6321c3721f38bc6 &quot;get_msg(address)&quot; 0x4E14AaF86CF0759d6Ec8C7433acd66F07D093293 | seth --to-ascii
+We &lt;3 Fe
+</code></pre>
+<p>As we can see in the last line of the output the signature for address <code>0x4E14AaF86CF0759d6Ec8C7433acd66F07D093293</code> is in fact <em>We &lt;3 Fe</em>.</p>
+<p>Congratulations! You've deployed real Fe code to a live network 🤖</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../quickstart/first_contract.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="../development/index.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../quickstart/first_contract.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="../development/index.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+    </body>
+</html>

@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["compile","Compiles Fe source code to Yul."]],"mod":[["constants",""],["constructor",""],["names",""],["operations",""],["runtime",""]],"type":[["ContractName","The name of a Fe contract."],["NamedYulContracts","A mapping of contract names and their Yul IR."],["YulIr","The intermediate representation of a contract as a string object."]]});

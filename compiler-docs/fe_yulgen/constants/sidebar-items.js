@@ -1,0 +1,1 @@
+initSidebarItems({"constant":[["PANIC_DIV_OR_MOD_BY_ZERO",""],["PANIC_FAILED_ASSERTION",""],["PANIC_OVER_OR_UNDERFLOW",""]],"fn":[["numeric_min_max","Return a hashmap containing min/max YUL literals for each supported integer size"]]});

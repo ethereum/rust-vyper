@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["compile","Compiles the given Fe source code to all targets."]],"struct":[["CompileError",""],["CompiledContract","The artifacts of a compiled contract."],["CompiledModule","The artifacts of a compiled module."]]});

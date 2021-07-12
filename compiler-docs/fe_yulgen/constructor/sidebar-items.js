@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["build","Builds a constructor for a contract with no init function."],["build_with_init","Builds a constructor for a contract with an init function."]]});

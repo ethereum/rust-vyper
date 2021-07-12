@@ -1,0 +1,786 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Specification (WIP) - The Fe Guide</title>
+        <!-- Custom HTML head -->
+        
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../index.html">Introduction</a></li><li class="chapter-item expanded "><a href="../quickstart/index.html"><strong aria-hidden="true">1.</strong> Quickstart</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../quickstart/installation.html"><strong aria-hidden="true">1.1.</strong> Installation</a></li><li class="chapter-item expanded "><a href="../quickstart/first_contract.html"><strong aria-hidden="true">1.2.</strong> Write your first contract</a></li><li class="chapter-item expanded "><a href="../quickstart/deploy_contract.html"><strong aria-hidden="true">1.3.</strong> Deploying a contract to a testnet</a></li></ol></li><li class="chapter-item expanded "><a href="../development/index.html"><strong aria-hidden="true">2.</strong> Development</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../development/build.html"><strong aria-hidden="true">2.1.</strong> Build &amp; Test</a></li><li class="chapter-item expanded "><a href="../development/release.html"><strong aria-hidden="true">2.2.</strong> Release</a></li></ol></li><li class="chapter-item expanded "><a href="../spec/index.html" class="active"><strong aria-hidden="true">3.</strong> Specification (WIP)</a></li><li class="chapter-item expanded "><a href="../release_notes.html"><strong aria-hidden="true">4.</strong> Release Notes</a></li><li class="chapter-item expanded "><a href="../code_of_conduct.html"><strong aria-hidden="true">5.</strong> Code of Conduct</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">The Fe Guide</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="fe-language-specification"><a class="header" href="#fe-language-specification">Fe Language Specification</a></h1>
+<div class="warning">
+  Warning: This is a work in progress document. It is incomplete and specifications aren't stable yet.
+</div>
+<h1 id="1-notation"><a class="header" href="#1-notation">1. Notation</a></h1>
+<h2 id="11-grammar"><a class="header" href="#11-grammar">1.1 Grammar</a></h2>
+<p>The following notations are used by the <em>Lexer</em> and <em>Syntax</em> grammar snippets:</p>
+<table><thead><tr><th>Notation</th><th>Examples</th><th>Meaning</th></tr></thead><tbody>
+<tr><td>CAPITAL</td><td>KW_IF</td><td>A token produced by the lexer</td></tr>
+<tr><td><em>ItalicCamelCase</em></td><td><em>Item</em></td><td>A syntactical production</td></tr>
+<tr><td><code>string</code></td><td><code>x</code>, <code>while</code>, <code>*</code></td><td>The exact character(s)</td></tr>
+<tr><td>\x</td><td>\n, \r, \t, \0</td><td>The character represented by this escape</td></tr>
+<tr><td>x<sup>?</sup></td><td><code>pub</code><sup>?</sup></td><td>An optional item</td></tr>
+<tr><td>x<sup>*</sup></td><td><em>OuterAttribute</em><sup>*</sup></td><td>0 or more of x</td></tr>
+<tr><td>x<sup>+</sup></td><td><em>MacroMatch</em><sup>+</sup></td><td>1 or more of x</td></tr>
+<tr><td>x<sup>a..b</sup></td><td>HEX_DIGIT<sup>1..6</sup></td><td>a to b repetitions of x</td></tr>
+<tr><td>|</td><td><code>u8</code> | <code>u16</code>, Block | Item</td><td>Either one or another</td></tr>
+<tr><td>[ ]</td><td>[<code>b</code> <code>B</code>]</td><td>Any of the characters listed</td></tr>
+<tr><td>[ - ]</td><td>[<code>a</code>-<code>z</code>]</td><td>Any of the characters in the range</td></tr>
+<tr><td>~[ ]</td><td>~[<code>b</code> <code>B</code>]</td><td>Any characters, except those listed</td></tr>
+<tr><td>~<code>string</code></td><td>~<code>\n</code>, ~<code>*/</code></td><td>Any characters, except this sequence</td></tr>
+<tr><td>( )</td><td>(<code>,</code> <em>Parameter</em>)</td><td>Groups items</td></tr>
+</tbody></table>
+<h2 id="2-lexical-structure"><a class="header" href="#2-lexical-structure">2. Lexical structure</a></h2>
+<h3 id="21-keywords"><a class="header" href="#21-keywords">2.1. Keywords</a></h3>
+<p>Fe divides keywords into two categories:</p>
+<ul>
+<li><a href="#strict-keywords">strict</a></li>
+<li><a href="#reserved-keywords">reserved</a></li>
+</ul>
+<h4 id="211-strict-keywords"><a class="header" href="#211-strict-keywords">2.1.1. Strict keywords</a></h4>
+<p>These keywords can only be used in their correct contexts. They cannot
+be used as the names of:</p>
+<ul>
+<li><a href="#3-items">Items</a></li>
+<li>[Variables] and function parameters</li>
+<li>Fields and <a href="#34-enumeration">variants</a></li>
+</ul>
+<blockquote>
+<p><strong><sup>Lexer:<sup></strong><br />
+KW_AS             : <code>as</code><br />
+KW_BREAK          : <code>break</code><br />
+KW_CONST          : <code>const</code><br />
+KW_CONTINUE       : <code>continue</code><br />
+KW_CONST          : <code>contract</code><br />
+KW_DEF            : <code>def</code><br />
+KW_ELIF           : <code>elif</code><br />
+KW_ELSE           : <code>else</code><br />
+KW_EMIT           : <code>emit</code><br />
+KW_ENUM           : <code>enum</code><br />
+KW_EVENT          : <code>event</code><br />
+KW_FALSE          : <code>false</code><br />
+KW_FOR            : <code>for</code><br />
+KW_IDX             : <code>idx</code><br />
+KW_IF             : <code>if</code><br />
+KW_IN             : <code>in</code><br />
+KW_LET            : <code>let</code><br />
+KW_NONPAYABLE     : <code>nonpayable</code><br />
+KW_PASS           : <code>pass</code><br />
+KW_PAYABLE        : <code>payable</code><br />
+KW_PUB            : <code>pub</code><br />
+KW_RETURN         : <code>return</code><br />
+KW_REVERT         : <code>revert</code><br />
+KW_SELFVALUE      : <code>self</code><br />
+KW_STRUCT         : <code>struct</code><br />
+KW_TRUE           : <code>true</code><br />
+KW_WHILE          : <code>while</code> <br />
+KW_ADDRESS        : <code>address</code></p>
+</blockquote>
+<h4 id="212-reserved-keywords"><a class="header" href="#212-reserved-keywords">2.1.2. Reserved keywords</a></h4>
+<p>These keywords aren't used yet, but they are reserved for future use. They have
+the same restrictions as strict keywords. The reasoning behind this is to make
+current programs forward compatible with future versions of Fe by forbidding
+them to use these keywords.</p>
+<blockquote>
+<p><strong><sup>Lexer</sup></strong><br />
+KW_ABSTRACT       : <code>abstract</code><br />
+KW_ABSTRACT       : <code>async</code><br />
+KW_ABSTRACT       : <code>await</code><br />
+KW_DO             : <code>do</code><br />
+KW_EXTERNAL       : <code>external</code><br />
+KW_FINAL          : <code>final</code><br />
+KW_IMPL           : <code>impl</code><br />
+KW_MACRO          : <code>macro</code><br />
+KW_MATCH          : <code>match</code><br />
+KW_MUT            : <code>mut</code><br />
+KW_OVERRIDE       : <code>override</code><br />
+KW_PURE           : <code>pure</code><br />
+KW_SELFTYPE       : <code>Self</code><br />
+KW_STATIC         : <code>static</code><br />
+KW_SUPER          : <code>super</code><br />
+KW_TRAIT          : <code>trait</code><br />
+KW_TYPE           : <code>type</code><br />
+KW_TYPEOF         : <code>typeof</code><br />
+KW_USE            : <code>use</code><br />
+KW_VIEW           : <code>view</code><br />
+KW_VIRTUAL        : <code>virtual</code><br />
+KW_WHERE          : <code>where</code><br />
+KW_YIELD          : <code>yield</code></p>
+</blockquote>
+<h3 id="22-identifiers"><a class="header" href="#22-identifiers">2.2. Identifiers</a></h3>
+<blockquote>
+<p><strong><sup>Lexer:<sup></strong><br />
+IDENTIFIER_OR_KEYWORD :<br />
+      [<code>a</code>-<code>z</code> <code>A</code>-<code>Z</code>] [<code>a</code>-<code>z</code> <code>A</code>-<code>Z</code> <code>0</code>-<code>9</code> <code>_</code>]<sup>*</sup><br />
+   | <code>_</code> [<code>a</code>-<code>z</code> <code>A</code>-<code>Z</code> <code>0</code>-<code>9</code> <code>_</code>]<sup>+</sup>
+<sub><em>Except a <a href="index.html#strict-keywords">strict</a> or <a href="index.html#reserved-keywords">reserved</a> keyword</em></sub></p>
+</blockquote>
+<p>An identifier is any nonempty ASCII string of the following form:</p>
+<p>Either</p>
+<ul>
+<li>The first character is a letter.</li>
+<li>The remaining characters are alphanumeric or <code>_</code>.</li>
+</ul>
+<p>Or</p>
+<ul>
+<li>The first character is <code>_</code>.</li>
+<li>The identifier is more than one character. <code>_</code> alone is not an identifier.</li>
+<li>The remaining characters are alphanumeric or <code>_</code>.</li>
+</ul>
+<h3 id="23-comments"><a class="header" href="#23-comments">2.3. Comments</a></h3>
+<p>MISSING</p>
+<h3 id="24-end-of-header"><a class="header" href="#24-end-of-header">2.4. End of header</a></h3>
+<blockquote>
+<p><strong><sup>Lexer:<sup></strong><br />
+<em>EndOfHeader</em> :<br />
+   <code>:</code></p>
+</blockquote>
+<h3 id="25-block-expression"><a class="header" href="#25-block-expression">2.5. Block Expression</a></h3>
+<blockquote>
+<p><strong><sup>Lexer:<sup></strong><br />
+<em>BlockExpression</em> :</p>
+</blockquote>
+<p>The contents of a block expression are indented from the parent context following <a href="https://docs.python.org/2.0/ref/indentation.html">Python indentation rules</a>.</p>
+<h2 id="3-items"><a class="header" href="#3-items">3. Items</a></h2>
+<h3 id="31-functions"><a class="header" href="#31-functions">3.1. Functions</a></h3>
+<blockquote>
+<p><strong><sup>Syntax</sup></strong><br />
+<em>Function</em> :<br />
+   <em>FunctionDecorators</em><br />
+   <em>FunctionQualifiers</em> <code>def</code> <a href="#22-identifiers">IDENTIFIER</a><br />
+      <code>(</code> <em>FunctionParameters</em><sup>?</sup> <code>)</code><br />
+      <em>FunctionReturnType</em><sup>?</sup><br />
+      <a href="#24-end-of-header"><em>EndOfHeader</em></a><br />
+      <a href="#25-block-expression"><em>BlockExpression</em></a></p>
+<p><em>FunctionQualifiers</em> :<br />
+   <code>pub</code><sup>?</sup></p>
+<p><em>FunctionDecorators</em> :<br />
+   <em>FunctionDecorator</em><sup>*</sup></p>
+<p><em>FunctionDecorator</em> :<br />
+   <code>@</code><a href="#22-identifiers">IDENTIFIER</a></p>
+<p><em>FunctionParameters</em> :<br />
+   <em>FunctionParam</em> (<code>,</code> <em>FunctionParam</em>)<sup>*</sup> <code>,</code><sup>?</sup></p>
+<p><em>FunctionParam</em> :<br />
+   <a href="#22-identifiers">IDENTIFIER</a> <code>:</code> <a href="#51-types"><em>Type</em></a></p>
+<p><em>FunctionReturnType</em> :<br />
+   <code>-&gt;</code> <a href="#51-types"><em>Type</em></a></p>
+</blockquote>
+<p>A <em>function</em> consists of a [block], along with a name and a set of parameters.
+Other than a name, all these are optional. Functions are declared with the
+keyword <code>def</code>. Functions may declare a set of <em>input</em> [<em>variables</em>][variables]
+as parameters, through which the caller passes arguments into the function, and
+the <em>output</em> <a href="#51-types"><em>type</em></a> of the value the function will return to its caller
+on completion.</p>
+<p>When referred to, a <em>function</em> yields a first-class <em>value</em> of the
+corresponding zero-sized [<em>function item type</em>], which
+when called evaluates to a direct call to the function.</p>
+<p>A function header ends with a colon (<code>:</code>) after which the function body begins.</p>
+<p>For example, this is a simple function:</p>
+<pre><code class="language-python">def answer_to_life_the_universe_and_everything() -&gt; u256:
+    return 42;
+</code></pre>
+<h4 id="311-visibility-and-privacy"><a class="header" href="#311-visibility-and-privacy">3.1.1 Visibility and Privacy</a></h4>
+<p>These two terms are often used interchangeably, and what they are attempting to convey is the answer to the question &quot;Can this item be used at this location?&quot;</p>
+<p>Fe knows two different types of visibility for functions and state variables: <code>public</code> and <code>private</code>. Visibility of <code>private</code> is the default and is used if no other visiblity is specified.</p>
+<p><strong>Public:</strong> External functions are part of the contract interface, which means they can be called from other contracts and via transactions.</p>
+<p><strong>Private:</strong> Those functions and state variables can only be accessed internally from within the same contract. This is the default visibility.</p>
+<p>For example, this is a function that can be called externally from a transaction:</p>
+<pre><code class="language-python">pub def answer_to_life_the_universe_and_everything() -&gt; u256:
+    return 42;
+</code></pre>
+<h3 id="32-structs"><a class="header" href="#32-structs">3.2. Structs</a></h3>
+<blockquote>
+<p><strong><sup>Syntax</sup></strong><br />
+<em>Struct</em> :<br />
+   <code>struct</code>
+<a href="#22-identifiers">IDENTIFIER</a> 
+   <a href="#24-end-of-header"><em>EndOfHeader</em></a><br />
+   <em>StructField</em><sup>*</sup></p>
+<p><em>StructField</em> :<br />
+   <a href="#22-identifiers">IDENTIFIER</a> <code>:</code> <a href="#51-types"><em>Type</em></a></p>
+</blockquote>
+<p>A <em>struct</em> is a nominal <a href="#5117-struct-types">struct type</a> defined with the keyword <code>struct</code>.</p>
+<p>An example of a <code>struct</code> item and its use:</p>
+<pre><code>struct Point:
+    x: u256
+    y: u256
+
+p = Point {x: 10, y: 11}
+px: u256 = p.x;
+</code></pre>
+<p>Builtin functions:</p>
+<ul>
+<li><code>abi_encode()</code> encodes the struct as an ABI tuple and returns the encoded data as a fixed-size byte array that is equal in size to the encoding.</li>
+</ul>
+<h3 id="33-events"><a class="header" href="#33-events">3.3. Events</a></h3>
+<blockquote>
+<p><strong><sup>Syntax</sup></strong><br />
+<em>Event</em> :<br />
+   <code>event</code>
+<a href="#22-identifiers">IDENTIFIER</a> 
+   <a href="#24-end-of-header"><em>EndOfHeader</em></a><br />
+   <em>EventField</em><sup>*</sup></p>
+<p><em>EventField</em> :<br />
+   <em>EventIndexability</em> <a href="#22-identifiers">IDENTIFIER</a> <code>:</code> <a href="#51-types"><em>Type</em></a></p>
+</blockquote>
+<blockquote>
+<p><em>EventIndexability</em> :<br />
+   <code>idx</code><sup>?</sup></p>
+</blockquote>
+<p>An <em>event</em> is a nominal <a href="#51114-event-types">event type</a> defined with the keyword <code>event</code>. It is emitted with the keyword <code>emit</code>.</p>
+<p>An example of a <code>event</code> item and its use:</p>
+<pre><code>event Transfer:
+    idx sender: address
+    idx receiver: address
+    value: u256
+
+def transfer(to : address, value : u256):
+   # Heavy logic here
+   # All done, log the event for listeners
+   emit Transfer(msg.sender, _to, _value)
+</code></pre>
+<h3 id="34-enumeration"><a class="header" href="#34-enumeration">3.4. Enumeration</a></h3>
+<blockquote>
+<p><strong><sup>Syntax</sup></strong><br />
+<em>Enumeration</em> :<br />
+   <code>enum</code>
+<a href="#22-identifiers">IDENTIFIER</a> 
+   <a href="#24-end-of-header"><em>EndOfHeader</em></a><br />
+   <em>EnumField</em><sup>*</sup></p>
+<p><em>EnumField</em> :<br />
+   <a href="#22-identifiers">IDENTIFIER</a><code>,</code></p>
+</blockquote>
+<p>An <em>enumeration</em>, also referred to as <em>enum</em> is a simultaneous definition of a
+nominal <a href="#5118-enum-types">enumerated type</a>, that can be used to create or pattern-match values of the corresponding enumerated type.</p>
+<p>Enumerations are declared with the keyword <code>enum</code>.</p>
+<p>An example of an <code>enum</code> item and its use:</p>
+<pre><code>enum Animal:
+    Dog,
+    Cat,
+
+barker = Animal.Dog
+</code></pre>
+<h3 id="35-type-aliases"><a class="header" href="#35-type-aliases">3.5. Type aliases</a></h3>
+<blockquote>
+<p><strong><sup>Syntax</sup></strong><br />
+<em>TypeAlias</em> :<br />
+   <code>type</code> <a href="#22-identifiers">IDENTIFIER</a> <code>=</code> <a href="#51-types"><em>Type</em></a></p>
+</blockquote>
+<p>A <em>type alias</em> defines a new name for an existing <a href="#51-types">type</a>. Type aliases are
+declared with the keyword <code>type</code>.</p>
+<p>For example, the following defines the type <code>BookMsg</code> as a synonym for the type
+<code>bytes[100]</code>, a sequence of <code>100</code> bytes:</p>
+<pre><code>type BookMsg = bytes[100]
+</code></pre>
+<h3 id="36-contracts"><a class="header" href="#36-contracts">3.6. Contracts</a></h3>
+<blockquote>
+<p><strong><sup>Syntax</sup></strong><br />
+<em>Contract</em> :<br />
+   <code>contract</code>
+<a href="#22-identifiers">IDENTIFIER</a> 
+   <a href="#24-end-of-header"><em>EndOfHeader</em></a><br />
+   <em>ContractMember</em><sup>*</sup></p>
+<p><em>ContractMember</em>:<br />
+   [<em>Visibility</em>]<sup>?</sup><br />
+   (<br />
+          [<em>ContractField</em>]<br />
+      | [<em>Function</em>]<br />
+      | [<em>Struct</em>]<br />
+      | [<em>Event</em>]<br />
+      | [<em>Enumeration</em>]<br />
+   )</p>
+<p><em>Visibility</em> :<br />
+   <code>pub</code><sup>?</sup></p>
+<p><em>ContractField</em> :<br />
+   <a href="#22-identifiers">IDENTIFIER</a> <code>:</code> <a href="#51-types"><em>Type</em></a></p>
+</blockquote>
+<p>A <em>contract</em> in Fe is a collection of code that resides at a specific address on the Ethereum blockchain. It is defined with the keyword <code>contract</code>.</p>
+<p>An example of a <code>contract</code>:</p>
+<pre><code>contract GuestBook:
+    pub guest_book: Map&lt;address, bytes[100]&gt;
+
+    event Signed:
+        idx book_msg: bytes[100]
+
+    pub def sign(book_msg: bytes[100]):
+        self.guest_book[msg.sender] = book_msg
+
+        emit Signed(book_msg=book_msg)
+
+    pub def get_msg(addr: address) -&gt; bytes[100]:
+        return self.guest_book[addr]
+</code></pre>
+<h2 id="4-statements-and-expressions"><a class="header" href="#4-statements-and-expressions">4. Statements and Expressions</a></h2>
+<h3 id="41-statements"><a class="header" href="#41-statements">4.1. Statements</a></h3>
+<h3 id="411-pragma-statement"><a class="header" href="#411-pragma-statement">4.1.1 <code>pragma</code> statement</a></h3>
+<blockquote>
+<p><strong><sup>Syntax</sup></strong><br />
+<em>PragmaStatement</em> :<br />
+   <code>pragma</code> [<em>VersionRequirementExpression</em>]</p>
+</blockquote>
+<p>The pragma statement is denoted with the keyword <code>pragma</code>. Evaluating a <code>pragma</code>
+statement will cause the compiler to reject compilation if the version of the compiler does not conform to the given version requirement.</p>
+<p>An example of a <code>pragma</code> statement:</p>
+<pre><code>pragma ^0.1.0
+</code></pre>
+<p>The version requirement syntax is identical to the one that is used by cargo (<a href="https://doc.rust-lang.org/cargo/reference/specifying-dependencies.html">more info</a>).</p>
+<h3 id="412-revert-statement"><a class="header" href="#412-revert-statement">4.1.2 <code>revert</code> statement</a></h3>
+<blockquote>
+<p><strong><sup>Syntax</sup></strong><br />
+<em>RevertStatement</em> :<br />
+   <code>revert</code><sup>?</sup></p>
+</blockquote>
+<p>The revert statement is denoted with the keyword <code>revert</code>. Evaluating a <code>revert</code>
+statement will cause to revert all state changes made by the call and return with an revert error to the caller.</p>
+<p>An example of a <code>revert</code> statement:</p>
+<pre><code>def transfer(to : address, value : u256):
+    if not self.in_whitelist(to):
+        revert
+    # more logic here
+
+### 4.2 Expressions
+
+### 4.2.1 Arithmetic Operators
+
+&gt; **&lt;sup&gt;Syntax&lt;/sup&gt;**\
+&gt; _ArithmeticExpression_ :\
+&gt; &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; [_Expression_] `+` [_Expression_]\
+&gt; &amp;nbsp;&amp;nbsp; | [_Expression_] `-` [_Expression_]\
+&gt; &amp;nbsp;&amp;nbsp; | [_Expression_] `*` [_Expression_]\
+&gt; &amp;nbsp;&amp;nbsp; | [_Expression_] `/` [_Expression_]\
+&gt; &amp;nbsp;&amp;nbsp; | [_Expression_] `%` [_Expression_]\
+&gt; &amp;nbsp;&amp;nbsp; | [_Expression_] `**` [_Expression_]\
+&gt; &amp;nbsp;&amp;nbsp; | [_Expression_] `&amp;` [_Expression_]\
+&gt; &amp;nbsp;&amp;nbsp; | [_Expression_] `|` [_Expression_]\
+&gt; &amp;nbsp;&amp;nbsp; | [_Expression_] `^` [_Expression_]\
+&gt; &amp;nbsp;&amp;nbsp; | [_Expression_] `&lt;&lt;` [_Expression_]\
+&gt; &amp;nbsp;&amp;nbsp; | [_Expression_] `&gt;&gt;` [_Expression_]
+
+Binary operators expressions are all written with [infix notation](https://en.wikipedia.org/wiki/Infix_notation).
+This table summarizes the behavior of arithmetic and logical binary operators on
+primitive types.
+
+| Symbol | Integer                 | Status      | Discussions    |
+|--------|-------------------------|-------------|----------------|
+| `+`    | Addition                | IMPLEMENTED |                |
+| `-`    | Subtraction             | IMPLEMENTED |                |
+| `*`    | Multiplication          | IMPLEMENTED |                |
+| `/`    | Division*               | IMPLEMENTED |                |
+| `%`    | Remainder               | IMPLEMENTED |                |
+| `**`   | Exponentiation          | IMPLEMENTED |                |
+| `&amp;`    | Bitwise AND             | IMPLEMENTED |                |
+| &lt;code&gt;&amp;#124;&lt;/code&gt; | Bitwise OR | IMPLEMENTED |                |
+| `^`    | Bitwise XOR             | IMPLEMENTED |                |
+| `&lt;&lt;`   | Left Shift              | IMPLEMENTED |                |
+| `&gt;&gt;`   | Right Shift             | IMPLEMENTED |                |
+
+\* Integer division rounds towards zero.
+
+
+Here are examples of these operators being used.
+
+</code></pre>
+<p>3 + 6 == 9
+6 - 3 == 3
+2 * 3 == 6
+6 / 3 == 2 TODO: Rest
+5 % 4 == 1
+2 ** 4 == 16
+12 &amp; 25 == 8
+12 | 25 == 29
+12 ^ 25 == 21
+212 &lt;&lt; 1 == 424
+212 &gt;&gt; 1 == 106</p>
+<pre><code>
+### 4.2.2 Comparision Operators
+
+&gt; **&lt;sup&gt;Syntax&lt;/sup&gt;**\
+&gt; _ComparisonExpression_ :\
+&gt; &amp;nbsp;&amp;nbsp; &amp;nbsp;&amp;nbsp; [_Expression_] `==` [_Expression_]\
+&gt; &amp;nbsp;&amp;nbsp; | [_Expression_] `!=` [_Expression_]\
+&gt; &amp;nbsp;&amp;nbsp; | [_Expression_] `&gt;` [_Expression_]\
+&gt; &amp;nbsp;&amp;nbsp; | [_Expression_] `&lt;` [_Expression_]\
+&gt; &amp;nbsp;&amp;nbsp; | [_Expression_] `&gt;=` [_Expression_]\
+&gt; &amp;nbsp;&amp;nbsp; | [_Expression_] `&lt;=` [_Expression_]
+
+
+| Symbol | Meaning                  |     Status                 |
+|--------|--------------------------|----------------------------|
+| `==`   | Equal                    |         IMPLEMENTED        |
+| `!=`   | Not equal                |         IMPLEMENTED        |
+| `&gt;`    | Greater than             |         IMPLEMENTED        |
+| `&lt;`    | Less than                |         IMPLEMENTED        |
+| `&gt;=`   | Greater than or equal to |         IMPLEMENTED        |
+| `&lt;=`   | Less than or equal to    |         IMPLEMENTED        |
+
+Here are examples of the comparison operators being used.
+
+</code></pre>
+<p>123 == 123
+23 != -12
+12 &gt; 11
+11 &gt;= 11
+11 &lt; 12
+11 &lt;= 11</p>
+<pre><code>
+## 5. Types system
+
+### 5.1 Types
+
+#### 5.1.1 Types
+
+Every variable, item, and value in a Fe program has a type. The _type_ of a
+*value* defines the interpretation of the memory holding it and the operations
+that may be performed on the value.
+
+Built-in types are tightly integrated into the language, in nontrivial ways
+that are not possible to emulate in user-defined types. User-defined types have
+limited capabilities.
+
+The list of types is:
+
+* Data types
+    * Base types:
+        * [Boolean] — `true` or `false`
+        * [Address] - Ethereum address
+        * [Numeric] — integer
+    * Reference types:
+        * Sequence types
+            * [Tuple]
+            * [Array]
+            * [Bytes]
+            * [String]
+            * [Struct]
+            * [Enum]
+        * [HashMap]
+* Other types:
+    * [Event]
+    * [Contract]
+    * [Function]
+
+### 5.1.1.1 Boolean type
+
+The `bool` type is a data type which can be either `true` or `false`.
+
+Example:
+
+```rust
+x = true
+</code></pre>
+<h3 id="5112-contract-type"><a class="header" href="#5112-contract-type">5.1.1.2. Contract type</a></h3>
+<p>An <em>contract type</em> is the type denoted by the name of an <a href="#36-contracts"><code>contract</code> item</a>.</p>
+<p>A value of a given contract type carries the contract's public interface as 
+attribute functions. A new contract value can be created by either casting
+an address to a contract type or by creating a new contract using the type 
+attribute functions <code>create</code> or <code>create2</code>.</p>
+<p>example:</p>
+<pre><code class="language-python"> contract Foo:
+    pub def get_my_num() -&gt; u256:
+        return 42
+
+contract FooFactory:
+    pub def create2_foo() -&gt; address:
+        # `0` is the value being sent and `52` is the address salt
+        foo: Foo = Foo.create2(0, 52)
+        return address(foo)
+</code></pre>
+<h3 id="5113-numeric-types"><a class="header" href="#5113-numeric-types">5.1.1.3. Numeric types</a></h3>
+<p>The unsigned integer types consist of:</p>
+<table><thead><tr><th>Type</th><th>Minimum</th><th>Maximum</th></tr></thead><tbody>
+<tr><td><code>u8</code></td><td>0</td><td>2<sup>8</sup>-1</td></tr>
+<tr><td><code>u16</code></td><td>0</td><td>2<sup>16</sup>-1</td></tr>
+<tr><td><code>u32</code></td><td>0</td><td>2<sup>32</sup>-1</td></tr>
+<tr><td><code>u64</code></td><td>0</td><td>2<sup>64</sup>-1</td></tr>
+<tr><td><code>u128</code></td><td>0</td><td>2<sup>128</sup>-1</td></tr>
+<tr><td><code>u256</code></td><td>0</td><td>2<sup>256</sup>-1</td></tr>
+</tbody></table>
+<p>The signed two's complement integer types consist of:</p>
+<table><thead><tr><th>Type</th><th>Minimum</th><th>Maximum</th></tr></thead><tbody>
+<tr><td><code>i8</code></td><td>-(2<sup>7</sup>)</td><td>2<sup>7</sup>-1</td></tr>
+<tr><td><code>i16</code></td><td>-(2<sup>15</sup>)</td><td>2<sup>15</sup>-1</td></tr>
+<tr><td><code>i32</code></td><td>-(2<sup>31</sup>)</td><td>2<sup>31</sup>-1</td></tr>
+<tr><td><code>i64</code></td><td>-(2<sup>63</sup>)</td><td>2<sup>63</sup>-1</td></tr>
+<tr><td><code>i128</code></td><td>-(2<sup>127</sup>)</td><td>2<sup>127</sup>-1</td></tr>
+<tr><td><code>i256</code></td><td>-(2<sup>255</sup>)</td><td>2<sup>255</sup>-1</td></tr>
+</tbody></table>
+<h3 id="5114-textual-types"><a class="header" href="#5114-textual-types">5.1.1.4. Textual types</a></h3>
+<p>MISSING</p>
+<h3 id="5115-tuple-types"><a class="header" href="#5115-tuple-types">5.1.1.5. Tuple types</a></h3>
+<p>MISSING</p>
+<h3 id="5116-array-types"><a class="header" href="#5116-array-types">5.1.1.6. Array types</a></h3>
+<p>MISSING</p>
+<h3 id="5117-struct-types"><a class="header" href="#5117-struct-types">5.1.1.7. Struct types</a></h3>
+<p>An <em>struct type</em> is the type denoted by the name of an <a href="#32-structs"><code>struct</code> item</a>.</p>
+<h3 id="5118-enumerated-types"><a class="header" href="#5118-enumerated-types">5.1.1.8. Enumerated types</a></h3>
+<p>An <em>enum type</em> is the type denoted by the name of an <a href="#34-enumeration"><code>enum</code> item</a>.</p>
+<h3 id="5119-function-item-types"><a class="header" href="#5119-function-item-types">5.1.1.9. Function item types</a></h3>
+<p>MISSING</p>
+<h3 id="51110-address-type"><a class="header" href="#51110-address-type">5.1.1.10. Address type</a></h3>
+<p>MISSING</p>
+<h3 id="51111-hashmap-type"><a class="header" href="#51111-hashmap-type">5.1.1.11. HashMap type</a></h3>
+<p>Maps a key to a value.</p>
+<p>Example:</p>
+<pre><code>Map&lt;TKey,TValue&gt;
+</code></pre>
+<p>Where TKey is a base type and TValue is any data type.</p>
+<h3 id="51112-bytes-types"><a class="header" href="#51112-bytes-types">5.1.1.12. Bytes types</a></h3>
+<p>MISSING</p>
+<h3 id="51113-string-types"><a class="header" href="#51113-string-types">5.1.1.13. String types</a></h3>
+<p>MISSING</p>
+<h3 id="51114-event-types"><a class="header" href="#51114-event-types">5.1.1.14. Event types</a></h3>
+<p>An <em>event type</em> is the type denoted by the name of an <a href="#33-events"><code>event</code> item</a>.</p>
+<h2 id="6-data-layout"><a class="header" href="#6-data-layout">6. Data Layout</a></h2>
+<p>There are three places where data can be stored on the EVM:</p>
+<ul>
+<li><strong>stack</strong>: 256-bit values placed on the stack that are loaded using <code>DUP</code> operations.</li>
+<li><strong>storage</strong>: 256-bit address space where 256-bit values can be stored. Accessing higher
+storage slots does not increase gas cost.</li>
+<li><strong>memory</strong>: 256-bit address space where 256-bit values can be stored. Accessing higher
+memory slots increases gas cost.</li>
+</ul>
+<p>Each data type described in section 5 can be stored in these locations. How data is stored is
+described in this section.</p>
+<h3 id="61-stack"><a class="header" href="#61-stack">6.1. Stack</a></h3>
+<p>The following can be stored on the stack:</p>
+<ul>
+<li>base type values</li>
+<li>pointers to sequence type values</li>
+</ul>
+<p>The size of each value stored on the stack must not exceed 256 bits. Since all base types are less
+than or equal to 256 bits in size, we store them on the stack. Pointers to values stored in memory
+may also be stored on the stack.</p>
+<p>Example:</p>
+<pre><code class="language-python"># function scope
+foo: u256 = 42 # foo is stored on the stack
+bar: u256[100] # bar is a memory pointer stored on the stack
+</code></pre>
+<h3 id="62-storage"><a class="header" href="#62-storage">6.2. Storage</a></h3>
+<p>All data types can be stored in storage.</p>
+<h4 id="621-constant-size-values-in-storage"><a class="header" href="#621-constant-size-values-in-storage">6.2.1. Constant size values in storage</a></h4>
+<p>Storage pointers for constant size values are determined at compile time.</p>
+<p>Example:</p>
+<pre><code class="language-python"># contract scope
+foo: u256 # foo is assigned a static pointer by the compiler
+</code></pre>
+<p>The value of a base type in storage is found by simply loading the value from storage at the
+given pointer.</p>
+<p>To find an element inside of a sequence type, the relative location of the element is added to the
+given pointer.</p>
+<h4 id="622-maps-in-storage"><a class="header" href="#622-maps-in-storage">6.2.2. Maps in storage</a></h4>
+<p>Maps are not assigned pointers, because they do not have a location in storage. They are instead
+assigned a nonce that is used to derive the location of keyed values during runtime.</p>
+<p>Example:</p>
+<pre><code class="language-python"># contract scope
+bar: Map&lt;address, u256&gt; # bar is assigned a static nonce by the compiler
+baz: Map&lt;address, Map&lt;address, u256&gt;&gt; # baz is assigned a static nonce by the compiler
+</code></pre>
+<p>The expression <code>bar[0x00]</code> would resolve to the hash of both bar's nonce and the key value
+.i.e. <code>keccak256(&lt;bar nonce&gt;, 0x00)</code>. Similarly, the expression <code>baz[0x00][0x01]</code> would resolve to
+a nested hash i.e. <code>keccak256(keccak256(&lt;baz nonce&gt;, 0x00), 0x01)</code>.</p>
+<h4 id="623-the-to_mem-function"><a class="header" href="#623-the-to_mem-function">6.2.3. The <code>to_mem</code> function</a></h4>
+<p>Reference type values can be copied from storage and into memory using the <code>to_mem</code> function.</p>
+<p>Example:</p>
+<pre><code class="language-python">my_array_var: u256[10] = self.my_array_field.to_mem()
+</code></pre>
+<h3 id="63-memory"><a class="header" href="#63-memory">6.3. Memory</a></h3>
+<p>Only sequence types can be stored in memory.</p>
+<p>The first memory slot (<code>0x00</code>) is used to keep track of the lowest available memory slot. Newly
+allocated segments begin at the value given by this slot. When more memory has been allocated,
+the value stored in <code>0x00</code> is increased.</p>
+<p>We do not free memory after it is allocated.</p>
+<h4 id="631-sequence-types-in-memory"><a class="header" href="#631-sequence-types-in-memory">6.3.1. Sequence types in memory</a></h4>
+<p>Sequence type values may exceed the 256-bit stack slot size, so we store them in memory and
+reference them using pointers kept on the stack.</p>
+<p>Example:</p>
+<pre><code class="language-python"># function scope
+foo: u256[100] # foo is a pointer that references 100 * 256 bits in memory.
+</code></pre>
+<p>To find an element inside of a sequence type, the relative location of the element is added to the
+given pointer.</p>
+<h4 id="623-the-clone-function"><a class="header" href="#623-the-clone-function">6.2.3. The <code>clone</code> function</a></h4>
+<p>Reference type values in memory can be cloned using the <code>clone</code> function.</p>
+<p>Example:</p>
+<pre><code class="language-python"># with clone
+foo: u256[10] = bar.clone() # `foo` points to a new segment of memory
+assert foo[1] == bar[1] 
+foo[1] = 42
+assert foo[1] != bar[1] # modifying `foo` does not modify bar
+
+# without clone
+foo: u256[10] = bar # `foo` and `bar` point to the same segment of memory
+assert foo[1] == bar[1]
+foo[1] = 42
+assert foo[1] == bar[1] # modifying `foo` also modifies `bar`
+</code></pre>
+<h3 id="64-function-calls"><a class="header" href="#64-function-calls">6.4. Function calls</a></h3>
+<p>Constant size values stored on the stack or in memory can be passed into and returned by functions.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../development/release.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="../release_notes.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../development/release.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="../release_notes.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+    </body>
+</html>

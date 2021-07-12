@@ -1,0 +1,3 @@
+(function() {var implementors = {};
+implementors["fe_common"] = [{"text":"impl&lt;'a&gt; Files&lt;'a&gt; for <a class=\"struct\" href=\"fe_common/files/struct.FileStore.html\" title=\"struct fe_common::files::FileStore\">FileStore</a>","synthetic":false,"types":["fe_common::files::FileStore"]}];
+if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

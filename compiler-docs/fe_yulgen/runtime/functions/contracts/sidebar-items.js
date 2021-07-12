@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["all","Return all contacts runtime functions"],["calls","Builds a set of functions used to make calls to the given contract’s public functions."],["create","Function that executes the `create` operation."],["create2","Function that executes the `create2` operation."]]});

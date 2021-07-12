@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["BlockField",""],["ChainField",""],["ContractTypeMethod",""],["GlobalMethod",""],["MsgField",""],["Object",""],["SelfField",""],["TxField",""],["ValueMethod",""]]});
