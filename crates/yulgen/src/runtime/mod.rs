@@ -2,7 +2,7 @@ pub mod abi_dispatcher;
 pub mod functions;
 use crate::Context;
 use fe_analyzer::context::FunctionAttributes;
-use fe_analyzer::namespace::types::{AbiDecodeLocation, Contract, FixedSize};
+use fe_analyzer::namespace::types::{AbiDecodeLocation, Base, Contract, FixedSize, Struct};
 use fe_parser::ast as fe;
 use fe_parser::node::Node;
 use yultsur::*;
@@ -53,6 +53,16 @@ pub fn build(context: &Context, contract: &Node<fe::Contract>) -> Vec<yul::State
                 .structs
                 .clone()
                 .into_iter()
+                .map(|struct_| {
+                    // We don't need to generate ABI encoding functions for struct fields that are of type unit,
+                    // which is why we filter them out here.
+                    let fields: Vec<(String, FixedSize)> = struct_
+                        .fields
+                        .into_iter()
+                        .filter(|(_, typ)| !matches!(typ, FixedSize::Base(Base::Unit)))
+                        .collect();
+                    Struct::new(&struct_.name).with_fields(fields)
+                })
                 .map(|struct_| vec![FixedSize::Struct(struct_)])
                 .collect::<Vec<Vec<_>>>();
 

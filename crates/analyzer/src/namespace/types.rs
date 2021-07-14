@@ -209,10 +209,19 @@ pub struct Contract {
 }
 
 impl Struct {
+    /// Create an instance with the given name
     pub fn new(name: &str) -> Struct {
         Struct {
             name: name.to_string(),
             fields: vec![],
+        }
+    }
+
+    /// Create a new instance with the given fields
+    pub fn with_fields(&self, fields: Vec<(String, FixedSize)>) -> Struct {
+        Struct {
+            name: self.name.clone(),
+            fields,
         }
     }
 
